@@ -56,6 +56,23 @@ Route::get('editarusuario/{id}','UsuarioController@EditarUsuario')->name('usuari
 Route::post('updateusuario','UsuarioController@UpdateUsuario')->name('usuarioupdate');
 Route::post('deleteusuario','UsuarioController@DeleteUsuario')->name('usuariodelete');
 
+//Bodegas
+Route::get('bodega','BodegaController@Index')->name('bodegaindex');
+Route::get('crearbodega','BodegaController@CrearBodega')->name('bodegacrear');
+Route::post('guardarbodega','BodegaController@GuardaBodega')->name('bodegaguardar');
+Route::get('editarbodega/{id}','BodegaController@EditarBodega')->name('bodegaeditar');
+Route::post('updatebodega','BodegaController@UpdateBodega')->name('bodegaupdate');
+Route::post('deletebodega','BodegaController@DeleteBodega')->name('bodegadelete');
+
+//categorias
+Route::get('categoria','CategoriaController@Index')->name('categoriaindex');
+Route::get('crearcategoria','CategoriaController@CrearCategoria')->name('categoriacrear');
+Route::post('guardarcategoria','CategoriaController@GuardaCategoria')->name('categoriaguardar');
+Route::get('editarcategoria/{id}','CategoriaController@EditarCategoria')->name('categoriaeditar');
+Route::post('updatecategoria','CategoriaController@UpdateCategoria')->name('categoriaupdate');
+Route::post('deletecategoria','CategoriaController@DeleteCategoria')->name('categoriadelete');
+
+
 
 
 Route::post('authlogin','AuthController@Login')->name('authlogin');

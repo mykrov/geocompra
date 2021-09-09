@@ -135,7 +135,7 @@
                         swal({
                             position: 'top-end',
                             type: 'error',                          
-                            title: 'Error al guardar Actualizar',
+                            title: 'Error al Actualizar',
                             text:data.message,
                             showConfirmButton: false,
                             timer: 3200

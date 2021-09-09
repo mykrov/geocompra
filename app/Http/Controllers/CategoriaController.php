@@ -4,57 +4,45 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\GEOUSUARIO;
+use App\GEOCATEGORIA;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use AuthComtroller;
 use Session;
 
-class UsuarioController extends Controller
+class CategoriaController extends Controller
 {
-    
     public function Index(){
-        $items = DB::table('GEOUSUARIO')->get();
-        return view('usuario.index',['usuarios'=>$items]);
+
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $idEmpresa = $empresadata['IDEMPRESA'];
+
+        $items = DB::table('GEOCATEGORIA')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get();
+
+        return view('categoria.index',['categorias'=>$items]);
     }
 
-    public function CrearUsuario(){
-        $roles = DB::table('GEOROLES')->get();
-        $bodegas = DB::table('GEOBODEGA')->get();
-        
-        return view('usuario.crearusuario',[
-            'roles'=>$roles,
-            'bodegas'=>$bodegas            
-        ]);
+    public function CrearCategoria(){
+        return view('categoria.crearcategoria');
     }
 
-    public function EditarUsuario($id){
-        
-        $roles = DB::table('GEOROLES')->get();
-        $bodegas = DB::table('GEOBODEGA')->get();
-        $usuario = GEOUSUARIO::where('IDUSUARIO',$id)->first();
-
-        return view('usuario.editarusuario',[
-            'roles'=>$roles,
-            'bodegas'=>$bodegas ,
-            'usuario'=>$usuario
-        ]);
+    public function EditarCategoria($id){       
+        $cat = DB::table('GEOCATEGORIA')
+        ->where('IDCATEGORIA',$id)
+        ->first();
+        return view('categoria.editarcategoria',['categoria'=>$cat]);
     }
 
-    public function GuardaUsuario(Request $r){
+    public function GuardaCategoria(Request $r){
 
-        $permisoID = 2;
+        $permisoID = 27;
             
         try {    
             $validator = $r->validate([
-                'nombre' => 'required|string|min:3',
-                'cedula' =>'required|string|min:3',
-                'telefono'=>'required|string|min:3',
-                'correo'=> 'required',
-                'usuario'=>'required',
-                'idrol'=>'required',                
-                'idbodega'=>'required',
-                'clave'=>'required'                
+                'nombre' => 'required|string|min:3'
             ]);
 
         } catch (\Throwable $th) {
@@ -71,38 +59,33 @@ class UsuarioController extends Controller
         $empresadata = $session2['empresa']; 
         $idEmpresa = $empresadata['IDEMPRESA'];
 
-        $cont = GEOUSUARIO::where('CEDULA',trim($r['cedula']))
+        $cont = GEOCATEGORIA::where('NOMBRE',trim($r['nombre']))
         ->where('IDEMPRESA',$idEmpresa)
         ->count();
 
         if($cont == 0){
-            $user = new GEOUSUARIO(); 
-            
-            $user->NOMBRE = $r["nombre"];
-            $user->CEDULA = $r["cedula"];
-            $user->TELEFONO = $r["telefono"];
-            $user->CORREO = $r["correo"];
-            $user->USUARIO = $r["usuario"];
-            $user->CLAVE = Hash::make($r["clave"]);
-            $user->ROL = $r["idrol"];
-            $user->IDEMPRESA = $idEmpresa;
-            $user->IDBODEGA = $r["idbodega"];
+
+            $cat = new GEOCATEGORIA();  
+            $cat->NOMBRE = $r['nombre'];
+            $cat->IDEMPRESA = $idEmpresa;
+           
             
             try {
-                $user->save();
+                $cat->save();
     
                 return response()->json([
                     "status"=>"ok",
                     "success" => true,
-                    "message" => "Usuario Guardado",
+                    "message" => "Categoria Guardada",
                     "logo" =>0,
                     "firma" =>0
                 ]); 
             } catch (\Throwable $th) {
+                Log::error($th->getMessage());
                 return response()->json([
                     "status"=>"error",
                     "success" => false,
-                    "message" => "error guardando usuario",
+                    "message" => "error guardando categoria",
                     "logo" =>0,
                     "firma" =>0
                 ]);  
@@ -111,14 +94,14 @@ class UsuarioController extends Controller
             return response()->json([
                 "status"=>"error",
                 "success" => false,
-                "message" => "Ya existe usuario con esa cedula.",
+                "message" => "Ya existe categoria con ese nombre.",
                 "logo" =>0,
                 "firma" =>0
             ]);
         }
     }
 
-    public function UpdateUsuario(Request $r){
+    public function UpdateCategoria(Request $r){
         
         $check_permiso = new AuthController();        
         
@@ -127,7 +110,7 @@ class UsuarioController extends Controller
         $usuariodata = $session2['usuario'];
         $idEmpresa = $empresadata['IDEMPRESA']; 
 
-        if($check_permiso->IsAuthorized(3) == false){
+        if($check_permiso->IsAuthorized(27) == false){
             return response()->json([
                 "status"=>"error",
                 "success" => false,
@@ -140,12 +123,7 @@ class UsuarioController extends Controller
         try {    
             $validator = $r->validate([
                 'nombre' => 'required|string|min:3',
-                'cedula' =>'required|string|min:3',
-                'telefono'=>'required|string|min:3',
-                'correo'=> 'required',
-                'usuario'=>'required',
-                'idrol'=>'required',                
-                'idbodega'=>'required',               
+                'id'=>'required'
             ]);
 
         } catch (\Throwable $th) {
@@ -156,42 +134,31 @@ class UsuarioController extends Controller
                 "logo" =>0,
                 "firma" =>0
             ]);            
-        }      
+        }     
         
-
-        $cont = GEOUSUARIO::where('CEDULA',trim($r['cedula']))
+        $cont = GEOCATEGORIA::where('NOMBRE','=',trim($r['nombre']))
         ->where('IDEMPRESA',$idEmpresa)
-        ->where('CEDULA','<>',$r['cedula'])
         ->count();
+
+        Log::info(['count'=> $cont]);
 
         if($cont == 0){
 
-            $user = GEOUSUARIO::where('CEDULA',$r['cedula'])
+            $cate = GEOCATEGORIA::where('IDCATEGORIA',$r['id'])
             ->where('IDEMPRESA',$idEmpresa)
             ->first();  
+
+            Log::info(['categoria a update'=>$cate]);
             
-            Log::info(['usuario a Modificar'=>$user]);
-            $user->NOMBRE = $r["nombre"];
-            $user->CEDULA = $r["cedula"];
-            $user->TELEFONO = $r["telefono"];
-            $user->CORREO = $r["correo"];
-            $user->USUARIO = $r["usuario"];
-            
-            if(trim($r['clave'] != '' )){
-                $user->CLAVE = Hash::make($r["clave"]);
-            }
-           
-            $user->ROL = $r["idrol"];
-            $user->IDEMPRESA = $idEmpresa;
-            $user->IDBODEGA = $r["idbodega"];
-            
+            $cate->NOMBRE = $r['nombre'];            
+        
             try {
-                $user->save();
+                $cate->save();
     
                 return response()->json([
                     "status"=>"ok",
                     "success" => true,
-                    "message" => "Usuario Actualizado",
+                    "message" => "Categoria Actualizada",
                     "logo" =>0,
                     "firma" =>0
                 ]); 
@@ -200,7 +167,7 @@ class UsuarioController extends Controller
                 return response()->json([
                     "status"=>"error",
                     "success" => false,
-                    "message" => "error actualizando usuario",
+                    "message" => "error actualizando categoria",
                     "logo" =>0,
                     "firma" =>0
                 ]);  
@@ -209,14 +176,14 @@ class UsuarioController extends Controller
             return response()->json([
                 "status"=>"error",
                 "success" => false,
-                "message" => "ya existe usuario con esa cedula.",
+                "message" => "ya existe categoria con ese nombre",
                 "logo" =>0,
                 "firma" =>0
             ]);
         }
     }
 
-    public function DeleteUsuario(Request $r){
+    public function DeleteCategoria(Request $r){
         
         $ID = $r['idProducto'];
         $pro = GEOPRODUCTO::where('IDPRODUCTO',$ID)->first();

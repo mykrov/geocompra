@@ -99,4 +99,24 @@ class AuthController extends Controller
         Session::forget('submenus');
         return view('login');
     }
+
+    public function IsAuthorized($idOpcion){
+        
+        $session2 = Session::get('usuario');
+        //$empresadata = $session2['empresa']; 
+        $usuariodata = $session2['usuario'];
+        //$idEmpresa = $empresadata['IDEMPRESA']; 
+
+        $avalible = DB::table('GEOACCESOS')
+        ->where('IDOPCION',$idOpcion)
+        ->where('IDUSUARIO',$usuariodata['IDUSUARIO'])
+        ->where('ESTADO','S')
+        ->count();
+
+        if( $avalible){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

@@ -1,6 +1,6 @@
 <div>
     <h4>
-        Listado de Usuarios
+        Listado de Categorias
     </h4>
 </div>
 
@@ -8,29 +8,21 @@
 <table class="table data-table table-striped" id="table-user">
     <thead>  
         <tr>
+            <th>Id</th>
             <th>Nombre</th>
-            <th>Cedula</th>
-            <th>Telefono</th>
-            <th>Correo</th>
-            <th>UserName</th>
-            <th>Rol</th>
-           
             <th>Editar</th>
             <th>Eliminar</th>
         </tr> 
     </thead>
     <tbody>
-        @foreach ($usuarios as $pro)
+        @foreach ($categorias as $pro)
             <tr>
+                <td>{{ $pro->IDCATEGORIA }}</td>
                 <td>{{ $pro->NOMBRE }}</td>
-                <td>{{ $pro->CEDULA }}</td>
-                <td>{{ $pro->TELEFONO }}</td>
-                <td>{{ $pro->CORREO }}</td>
-                <td>{{ $pro->USUARIO }}</td>
-                <td>{{ $pro->ROL }}</td>
                 
-                <td><a href="javascript:void(0);" data-id="{{$pro->IDUSUARIO}}" class="btn btn-icon btn-xs btn-info btn_editar"><i class="fa fa-edit"></i></a></td>
-                <td><a href="javascript:void(0);" data-id="{{$pro->IDUSUARIO}}" class="btn btn-icon  btn-xs btn-danger btn_eliminar"><i class="fa fa-trash"></i></a></td>
+                
+                <td><a href="javascript:void(0);" data-id="{{$pro->IDCATEGORIA}}" class="btn btn-icon btn-xs btn-info btn_editar"><i class="fa fa-edit"></i></a></td>
+                <td><a href="javascript:void(0);" data-id="{{$pro->IDCATEGORIA}}" class="btn btn-icon  btn-xs btn-danger btn_eliminar"><i class="fa fa-trash"></i></a></td>
             </tr>
         @endforeach
     </tbody>
@@ -56,12 +48,11 @@
 
     $('.btn_editar').on('click',function(){
         
-        let iduser = 0;
-        iduser = $(this).data("id");
-
+        let idbod = 0;
+        idbod = $(this).data("id");       
         
         $.ajax({
-            url: 'editarusuario/'+iduser ,
+            url: 'editarcategoria/'+idbod ,
             type: 'GET',
             data: null,
             success: function (data) {
@@ -75,8 +66,8 @@
 
     $('.btn_eliminar').on('click',function(){
         
-        let iduser = 0;
-        iduser = $(this).data("id");
+        let idbod = 0;
+        idbod = $(this).data("id");
         
         $.ajaxSetup({
             headers: {
@@ -85,10 +76,10 @@
         }); 
 
         const formData = new FormData();
-        formData.append("idusuario", iduser);
+        formData.append("idcat", idbod);
         
         $.ajax({
-            url: '{{route('usuariodelete')}}',
+            url: '{{route('categoriadelete')}}',
             type: 'POST',
             data: formData,
             success: function (data) {
@@ -97,7 +88,7 @@
                         swal({
                             position: 'top-end',
                             type: 'success',
-                            title: 'Usuario Eliminado.',
+                            title: 'Categoria Eliminada.',
                             showConfirmButton: false,
                             timer: 1200
                         })                      
@@ -107,7 +98,7 @@
                         swal({
                             position: 'top-end',
                             type: 'error',                          
-                            title: 'Error al eliminar usuario',
+                            title: 'Error al eliminar Categoria',
                             text:data.message,
                             showConfirmButton: false,
                             timer: 3200

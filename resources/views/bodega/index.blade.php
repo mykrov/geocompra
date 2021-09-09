@@ -1,6 +1,6 @@
 <div>
     <h4>
-        Listado de Usuarios
+        Listado de Bodegas
     </h4>
 </div>
 
@@ -8,29 +8,28 @@
 <table class="table data-table table-striped" id="table-user">
     <thead>  
         <tr>
-            <th>Nombre</th>
-            <th>Cedula</th>
+            <th>Nombre Comercial</th>
+            <th>Serie</th>
+            <th>Nº Secuencial</th>
+            <th>Nº Nota Cred.</th>
+            <th>Nº Guia Remision</th>
             <th>Telefono</th>
-            <th>Correo</th>
-            <th>UserName</th>
-            <th>Rol</th>
-           
             <th>Editar</th>
             <th>Eliminar</th>
         </tr> 
     </thead>
     <tbody>
-        @foreach ($usuarios as $pro)
+        @foreach ($bodegas as $pro)
             <tr>
-                <td>{{ $pro->NOMBRE }}</td>
-                <td>{{ $pro->CEDULA }}</td>
+                <td>{{ $pro->NOMBRECOMERCIAL }}</td>
+                <td>{{ $pro->SERIE }}</td>
+                <td>{{ $pro->NOSECUENCIAL }}</td>
+                <td>{{ $pro->NOSECUENCIALNCR }}</td>
+                <td>{{ $pro->NOGUIAREMISION }}</td>
                 <td>{{ $pro->TELEFONO }}</td>
-                <td>{{ $pro->CORREO }}</td>
-                <td>{{ $pro->USUARIO }}</td>
-                <td>{{ $pro->ROL }}</td>
                 
-                <td><a href="javascript:void(0);" data-id="{{$pro->IDUSUARIO}}" class="btn btn-icon btn-xs btn-info btn_editar"><i class="fa fa-edit"></i></a></td>
-                <td><a href="javascript:void(0);" data-id="{{$pro->IDUSUARIO}}" class="btn btn-icon  btn-xs btn-danger btn_eliminar"><i class="fa fa-trash"></i></a></td>
+                <td><a href="javascript:void(0);" data-id="{{$pro->IDBODEGA}}" class="btn btn-icon btn-xs btn-info btn_editar"><i class="fa fa-edit"></i></a></td>
+                <td><a href="javascript:void(0);" data-id="{{$pro->IDBODEGA}}" class="btn btn-icon  btn-xs btn-danger btn_eliminar"><i class="fa fa-trash"></i></a></td>
             </tr>
         @endforeach
     </tbody>
@@ -56,12 +55,11 @@
 
     $('.btn_editar').on('click',function(){
         
-        let iduser = 0;
-        iduser = $(this).data("id");
-
+        let idbod = 0;
+        idbod = $(this).data("id");       
         
         $.ajax({
-            url: 'editarusuario/'+iduser ,
+            url: 'editarbodega/'+idbod ,
             type: 'GET',
             data: null,
             success: function (data) {
@@ -75,8 +73,8 @@
 
     $('.btn_eliminar').on('click',function(){
         
-        let iduser = 0;
-        iduser = $(this).data("id");
+        let idbod = 0;
+        idbod = $(this).data("id");
         
         $.ajaxSetup({
             headers: {
@@ -85,10 +83,10 @@
         }); 
 
         const formData = new FormData();
-        formData.append("idusuario", iduser);
+        formData.append("idbod", idbod);
         
         $.ajax({
-            url: '{{route('usuariodelete')}}',
+            url: '{{route('bodegadelete')}}',
             type: 'POST',
             data: formData,
             success: function (data) {
@@ -97,7 +95,7 @@
                         swal({
                             position: 'top-end',
                             type: 'success',
-                            title: 'Usuario Eliminado.',
+                            title: 'Bodega Eliminada.',
                             showConfirmButton: false,
                             timer: 1200
                         })                      
@@ -107,7 +105,7 @@
                         swal({
                             position: 'top-end',
                             type: 'error',                          
-                            title: 'Error al eliminar usuario',
+                            title: 'Error al eliminar Bodega',
                             text:data.message,
                             showConfirmButton: false,
                             timer: 3200
