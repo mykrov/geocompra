@@ -88,7 +88,13 @@ Route::get('editarrepartidor/{id}','RepartidorController@EditarRepartidor')->nam
 Route::post('updaterepartidor','RepartidorController@UpdateRepartidor')->name('repartidorupdate');
 Route::post('deleterepartidor','RepartidorController@DeleteRepartidor')->name('repartidordelete');
 
-
+//empresas
+Route::get('empresa','EmpresaController@Index')->name('empresaindex');
+Route::get('crearempresa','EmpresaController@CrearEmpresa')->name('empresacrear');
+Route::post('guardarempresa','EmpresaController@GuardaEmpresa')->name('empresaguardar');
+Route::get('editarempresa/{id}','EmpresaController@EditarEmpresa')->name('empresaeditar');
+Route::post('updateempresa','EmpresaController@UpdateEmpresa')->name('empresaupdate');
+Route::post('deleteempresa','EmpresaController@DeleteEmpresa')->name('empresadelete');
 
 
 Route::post('authlogin','AuthController@Login')->name('authlogin');

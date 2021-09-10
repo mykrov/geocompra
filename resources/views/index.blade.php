@@ -109,7 +109,10 @@
                     <!-- begin sidebar-nav -->
                     <div class="sidebar-nav scrollbar scroll_light">
                         <ul class="metismenu " id="sidebarNav">
-                            <li class="nav-static-title">GeoCompra Menu</li>                            
+                            <li class="nav-static-title">GeoCompra Menu</li> 
+                            <li><a href="{{ route('index') }}" aria-expanded="false"><i class="nav-icon ti ti-desktop">
+                                </i><span class="nav-title">Dashboard</span></a> 
+                            </li>                                                       
                             @php
                                 $menItems = array();
                                 foreach(Session::get('submenus') as $key => $value){
@@ -135,7 +138,7 @@
                                     @endif                              
                                 @endforeach
                             @endif
-                            <li><a href="{{ route('documentos') }}" aria-expanded="false"><i class="nav-icon ti ti-comment"></i><span class="nav-title">Documentos</span></a> </li>                            
+                            
                         </ul>
                     </div>
                     <!-- end sidebar-nav -->
