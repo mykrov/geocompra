@@ -72,6 +72,22 @@ Route::get('editarcategoria/{id}','CategoriaController@EditarCategoria')->name('
 Route::post('updatecategoria','CategoriaController@UpdateCategoria')->name('categoriaupdate');
 Route::post('deletecategoria','CategoriaController@DeleteCategoria')->name('categoriadelete');
 
+//marcas
+Route::get('marca','MarcaController@Index')->name('marcaindex');
+Route::get('crearmarca','MarcaController@CrearMarca')->name('marcacrear');
+Route::post('guardarmarca','MarcaController@GuardaMarca')->name('marcaguardar');
+Route::get('editarmarca/{id}','MarcaController@EditarMarca')->name('marcaeditar');
+Route::post('updatemarca','MarcaController@UpdateMarca')->name('marcaupdate');
+Route::post('deletemarca','MarcaController@DeleteMarca')->name('marcadelete');
+
+//repartidor
+Route::get('repartidor','RepartidorController@Index')->name('repartidorindex');
+Route::get('crearrepartidor','RepartidorController@CrearRepartidor')->name('repartidorcrear');
+Route::post('guardarrepartidor','RepartidorController@GuardaRepartidor')->name('repartidorguardar');
+Route::get('editarrepartidor/{id}','RepartidorController@EditarRepartidor')->name('repartidoreditar');
+Route::post('updaterepartidor','RepartidorController@UpdateRepartidor')->name('repartidorupdate');
+Route::post('deleterepartidor','RepartidorController@DeleteRepartidor')->name('repartidordelete');
+
 
 
 
