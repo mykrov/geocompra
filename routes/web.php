@@ -29,6 +29,8 @@ Route::post('obtenerfacturas','DocumentosController@ConsultarFacturas')->name('o
 
 //Permisos
 Route::get('permisosindex','PermisosController@index')->name('permisosindex');
+Route::post('updatepermiso','PermisosController@EditarPermiso')->name('updatepermiso');
+Route::get('buscarpermisos/{iduser}','PermisosController@BuscarPermisos');
 
 
 //Productos
@@ -96,6 +98,14 @@ Route::get('editarempresa/{id}','EmpresaController@EditarEmpresa')->name('empres
 Route::post('updateempresa','EmpresaController@UpdateEmpresa')->name('empresaupdate');
 Route::post('deleteempresa','EmpresaController@DeleteEmpresa')->name('empresadelete');
 
+
+//itmes bodega
+Route::get('itembod','ItembodController@Index')->name('itembodindex');
+Route::get('crearitembod','ItembodController@CrearItembod')->name('itembodcrear');
+Route::post('guardaritembod','ItembodController@GuardaItembod')->name('itembodguardar');
+Route::get('editaritembod/{id}','ItembodController@EditarItembod')->name('itembodeditar');
+Route::post('updateitembod','ItembodController@UpdateItembod')->name('itembodupdate');
+Route::post('deleteitembod','ItembodController@DeleteItembod')->name('itemboddelete');
 
 Route::post('authlogin','AuthController@Login')->name('authlogin');
 Route::get('createuser','AuthController@Createuser');
