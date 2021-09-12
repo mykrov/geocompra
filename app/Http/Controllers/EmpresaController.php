@@ -53,11 +53,21 @@ class EmpresaController extends Controller
         ]);
     }
 
-    public function EditarEmpresa($id){       
-        $marca = DB::table('GEOMARCA')
-        ->where('IDMARCA',$id)
+    public function EditarEmpresa($id){
+        
+        $provincias = DB::table('GEOPROVINCIA')->get();
+        $cantones = DB::table('GEOCANTON')->get();
+        $parroquias = DB::table('GEOPARROQUIA')->get();       
+        $empresa = DB::table('GEOEMPRESA')
+        ->where('IDEMPRESA',$id)
         ->first();
-        return view('marca.editarmarca',['marca'=>$marca]);
+
+        return view('empresa.editarempresa',[
+            'provincias'=>$provincias,
+            'cantones'=>$cantones,
+            'parroquias'=>$parroquias,
+            'empresa'=>$empresa
+        ]);
     }
 
     public function GuardaEmpresa(Request $r){
@@ -129,14 +139,23 @@ class EmpresaController extends Controller
                 
             }
 
-
+            //Creacion de las carpetas del la empresa
+            if($this->CrearCarpetas($r['ruc']) == false){
+                return response()->json([
+                    "status"=>"error",
+                    "success" => false,
+                    "message" => "Error Creando Directorios de la empresa.",
+                    "logo" =>0,
+                    "firma" =>0
+                ]);
+            }
 
             $empre = new GEOEMPRESA();  
             $empre->RAZONSOCIAL = $r['razonsocial'];
             $empre->RUC = $r['ruc'];
             $empre->CORREO = $r['correo'];
-            $empre->RUTACERTIFICADO = $r[''];
-            $empre->LOGOEMPRESA = trim($dirFirm).'logoEmpresa_'.trim($r->ruc).'.jpg';
+            $empre->RUTACERTIFICADO = trim($dirFirm).trim($r->ruc).'\firmaElectronica_'.trim($r->ruc).'.p12';
+            $empre->LOGOEMPRESA = trim($dirFirm).trim($r->ruc).'\logoEmpresa_'.trim($r->ruc).'.jpg';
             $empre->IDPROVINCIA = $r['idprovincia'];
             $empre->IDCANTON = $r['idcanton'];
             $empre->IDPARROQUIA = $r['idparroquia'];
@@ -151,37 +170,54 @@ class EmpresaController extends Controller
             $empre->WSRECPRODUCCION = "";
             $empre->WSAUTOPRUEBA = "https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl";
             $empre->WSAUTOPRODUCCION = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl";
+            $empre->CONTRIBUYENTEESPECIAL = 0;
 
-            $empre->RUTAARCHIVOXMLFAC = "";
-            $empre->RUTAARCHIVOSPDF = "";
-            $empre->RUTAXMLFIRMADO = "";
-            $empre->RUTAXMLAUTORIZADO = "";
-            $empre->RUTAXMLERROR = "";
+            $empre->RUTAARCHIVOXMLFAC = trim($dirFirm).trim($r['ruc']).trim($backsal).'solo';
+            $empre->RUTAARCHIVOSPDF = trim($dirFirm).trim($r['ruc']).trim($backsal).'pdf';
+            $empre->RUTAXMLFIRMADO = trim($dirFirm).trim($r['ruc']).trim($backsal).'firmado';
+            $empre->RUTAXMLAUTORIZADO = trim($dirFirm).trim($r['ruc']).trim($backsal).'autorizado';
+            $empre->RUTAXMLERROR = trim($dirFirm).trim($r['ruc']).trim($backsal).'error';
 
             if($r['agente'] == 'on'){
                 $empre->AGENTERETENCION = 1;
             }
-
             if($r['contribuyente'] == 'on'){
                 $empre->CONTRIBUYENTEESPECIAL = 1;
             }
-
             if($r['estado'] == 'on'){
                 $empre->ESTADO = "A";
             }
-
-
             if($r['contabilidad'] == 'on'){
                 $empre->OBLIGADOCONTA = "SI";
-            }
-            
+            }            
             if($r['usafacelectronica'] == 'on'){
                 $empre->USAFACELECTRONICA = "S";
             }
 
+            $destinationPath='public/documents/'.$empre->RUC;
+            $file_extension = $r->logo->getClientOriginalExtension();
+            $file_extensionFirma = $r->firma->getClientOriginalExtension();
+
+            if($file_extensionFirma != 'p12'){
+                return response()->json([
+                    "status"=>"error",
+                    "success" => false,
+                    "message" => "formato firma invalida",
+                    "logo" => $file_extension,
+                    "firma" =>$file_extensionFirma
+                ]);
+            }
+
+            $fileName ='logoEmpresa_'.trim($empre->RUC).'.'.$file_extension;
+            $fileSing ='firmaElectronica_'.trim($empre->RUC).'.p12';           
+                
+
             try {
+
                 $empre->save();
-    
+                $path = $r->file('logo')->storeAs($destinationPath,$fileName);
+                $path2 = $r->file('firma')->storeAs($destinationPath,$fileSing);
+
                 return response()->json([
                     "status"=>"ok",
                     "success" => true,
@@ -210,7 +246,7 @@ class EmpresaController extends Controller
         }
     }
 
-    public function UpdateMarca(Request $r){
+    public function UpdateEmpresa(Request $r){
         
         $check_permiso = new AuthController();        
         
@@ -231,8 +267,10 @@ class EmpresaController extends Controller
 
         try {    
             $validator = $r->validate([
-                'nombre' => 'required|string|min:3',
-                'id'=>'required'
+                'razonsocial' => 'required|string|min:3',
+                'ruc' => 'required',
+                'correo' => 'required',
+                'actividadeconomica' => 'required'
             ]);
 
         } catch (\Throwable $th) {
@@ -245,29 +283,138 @@ class EmpresaController extends Controller
             ]);            
         }     
         
-        $cont = GEOMARCA::where('NOMBRE','=',trim($r['nombre']))
-        ->where('IDEMPRESA',$idEmpresa)
+        $cont = GEOEMPRESA::where('RUC','=',trim($r['ruc']))
+        ->where('IDEMPRESA','<>',$idEmpresa)
         ->count();
 
         //Log::info(['count'=> $cont]);
 
+        $actualizaFirmaImagen = true;
+
         if($cont == 0){
 
-            $marca= GEOMARCA::where('IDMARCA',$r['id'])
-            ->where('IDEMPRESA',$idEmpresa)
-            ->first();  
-
-            Log::info(['categoria a update'=>$marca]);
             
-            $marca->NOMBRE = $r['nombre'];            
-        
+            $backsal ='\ ';
+            $dirFirm = 'C:\laragon\www\geocompra\storage\app\public\documents\ ';
+
             try {
-                $marca->save();
+                
+                $validator = $r->validate([
+                    'firma' => 'required',
+                ]);
+
+                $certs = array();
+                $pkcs12= file_get_contents($r->firma);   
+                $fechaVenFirma = "";     
+                $fechaEmiFirma = "";
     
+                if(!openssl_pkcs12_read($pkcs12, $certs, $r->clavecertificado)){
+                    return response()->json([
+                        "status"=>"error",
+                        "success" => false,
+                        "message" => "La contraseña proporcionada para la Firma es incorrecta.",
+                        "logo" =>0,
+                        "firma" =>0
+                    ]);
+                }else{           
+                    $CertPriv  =  openssl_x509_parse($certs['cert']);
+                    $fechaVenFirma = date('Y-m-d', $CertPriv['validTo_time_t']);
+                    $fechaEmiFirma = date('Y-m-d', $CertPriv['validFrom_time_t']);
+                    
+                    $date_now = date("Y-m-d");
+        
+                    if ($date_now > $fechaVenFirma) {
+                        Log::error('Firma Vencida');
+                        Log::info($fechaVenFirma);
+                        return response()->json([
+                            "status"=>"error",
+                            "success" => false,
+                            "message" => "La firma electrónica está caducada. Fecha Vencimiento : ".date('d-m-Y', $CertPriv['validTo_time_t']),
+                            "logo" =>0,
+                            "firma" =>0
+                        ]);
+                    }
+                    
+                }
+
+
+            } catch (\Throwable $th) {
+                $actualizaFirmaImagen= false;
+                Log::info('Update sin firma');
+            }
+
+
+            $empre = GEOEMPRESA::where('IDEMPRESA',$r['id'])->first();
+            $empre->RAZONSOCIAL = $r['razonsocial'];
+            $empre->RUC = $r['ruc'];
+            $empre->CORREO = $r['correo'];
+            $empre->RUTACERTIFICADO = trim($dirFirm).trim($r->ruc).'\firmaElectronica_'.trim($r->ruc).'.p12';
+            $empre->LOGOEMPRESA = trim($dirFirm).trim($r->ruc).'\logoEmpresa_'.trim($r->ruc).'.jpg';
+            $empre->IDPROVINCIA = $r['idprovincia'];
+            $empre->IDCANTON = $r['idcanton'];
+            $empre->IDPARROQUIA = $r['idparroquia'];
+            $empre->ACTIVIDADECONOMICA = $r['actividadeconomica'];
+            $empre->CLAVEERTIFICADO = $r['clavecertificado'];
+            $empre->ESTADO = 'I';
+            $empre->AMBIENTE = $r['ambiente'];
+            $empre->OBLIGADOCONTA = "NO";
+            $empre->USAFACELECTRONICA = "N";              
+            $empre->IDTIPONEGOCIO = 1; 
+            $empre->WSRECEPRUEBA = "";
+            $empre->WSRECPRODUCCION = "";
+            $empre->WSAUTOPRUEBA = "https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl";
+            $empre->WSAUTOPRODUCCION = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl";
+            $empre->CONTRIBUYENTEESPECIAL = 0;
+
+            $empre->RUTAARCHIVOXMLFAC = trim($dirFirm).trim($r['ruc']).trim($backsal).'solo';
+            $empre->RUTAARCHIVOSPDF = trim($dirFirm).trim($r['ruc']).trim($backsal).'pdf';
+            $empre->RUTAXMLFIRMADO = trim($dirFirm).trim($r['ruc']).trim($backsal).'firmado';
+            $empre->RUTAXMLAUTORIZADO = trim($dirFirm).trim($r['ruc']).trim($backsal).'autorizado';
+            $empre->RUTAXMLERROR = trim($dirFirm).trim($r['ruc']).trim($backsal).'error';
+
+            if($r['agente'] == 'on'){
+                $empre->AGENTERETENCION = 1;
+            }
+            if($r['contribuyente'] == 'on'){
+                $empre->CONTRIBUYENTEESPECIAL = 1;
+            }
+            if($r['estado'] == 'on'){
+                $empre->ESTADO = "A";
+            }
+            if($r['contabilidad'] == 'on'){
+                $empre->OBLIGADOCONTA = "SI";
+            }            
+            if($r['usafacelectronica'] == 'on'){
+                $empre->USAFACELECTRONICA = "S";
+            }
+
+            if($actualizaFirmaImagen){
+                $destinationPath='public/documents/'.$empre->RUC;
+                $file_extension = $r->logo->getClientOriginalExtension();
+                $file_extensionFirma = $r->firma->getClientOriginalExtension();
+                if($file_extensionFirma != 'p12'){
+                    return response()->json([
+                        "status"=>"error",
+                        "success" => false,
+                        "message" => "formato firma invalida",
+                        "logo" => $file_extension,
+                        "firma" =>$file_extensionFirma
+                    ]);
+                }
+
+                $fileName ='logoEmpresa_'.trim($empre->RUC).'.'.$file_extension;
+                $fileSing ='firmaElectronica_'.trim($empre->RUC).'.p12'; 
+                $path = $r->file('logo')->storeAs($destinationPath,$fileName);
+                $path2 = $r->file('firma')->storeAs($destinationPath,$fileSing);  
+            }
+               
+            try {
+
+                $empre->save();
                 return response()->json([
                     "status"=>"ok",
                     "success" => true,
-                    "message" => "Categoria Actualizada",
+                    "message" => "Empresa Actualizada",
                     "logo" =>0,
                     "firma" =>0
                 ]); 
@@ -276,7 +423,7 @@ class EmpresaController extends Controller
                 return response()->json([
                     "status"=>"error",
                     "success" => false,
-                    "message" => "error actualizando categoria",
+                    "message" => "error actualizando empresa",
                     "logo" =>0,
                     "firma" =>0
                 ]);  
@@ -285,7 +432,7 @@ class EmpresaController extends Controller
             return response()->json([
                 "status"=>"error",
                 "success" => false,
-                "message" => "ya existe categoria con ese nombre",
+                "message" => "ya existe otra empresa registrada con ese RUC",
                 "logo" =>0,
                 "firma" =>0
             ]);
@@ -315,6 +462,48 @@ class EmpresaController extends Controller
                 "logo" =>0,
                 "firma" =>0
             ]);
+        }
+        
+    }
+
+    public function CrearCarpetas($rucT){
+        
+        $rutaLaracon = "C:\laragon\www\geocompra\storage\app\public\documents\ ";
+        $ruc = trim($rucT);
+        $backsal ='\ ';
+       
+        try {
+            //crear carpeta con ruc de empresa
+            if (!file_exists(trim($rutaLaracon).$ruc)) {
+                mkdir(trim($rutaLaracon).$ruc);
+            }
+    
+            $XMLFAC = trim($rutaLaracon).$ruc.trim($backsal).'solo';
+            $XMLFIRMADO = trim($rutaLaracon).$ruc.trim($backsal).'firmado';
+            $XMLAUTORIZADO = trim($rutaLaracon).$ruc.trim($backsal).'autorizado';
+            $XMLERROR = trim($rutaLaracon).$ruc.trim($backsal).'error';
+            $ARCHIVOSPDF = trim($rutaLaracon).$ruc.trim($backsal).'pdf';
+            
+            if (!file_exists($XMLFAC)) {
+                mkdir($XMLFAC);
+            }
+            if (!file_exists($XMLFIRMADO)) {
+                mkdir($XMLFIRMADO);
+            }
+            if (!file_exists($XMLAUTORIZADO)) {
+                mkdir($XMLAUTORIZADO);
+            }
+            if (!file_exists($XMLERROR)) {
+                mkdir($XMLERROR);
+            }
+            if (!file_exists($ARCHIVOSPDF)) {
+                mkdir($ARCHIVOSPDF);
+            }
+
+            return true;
+        } catch (\Throwable $th) {
+            Log::error(['error creando Carpetas'=>$th->getMessage()]) ;
+            return false;
         }
         
     }
