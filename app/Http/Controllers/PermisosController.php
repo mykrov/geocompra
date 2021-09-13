@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\GEOACCESOS;
 
 class PermisosController extends Controller
 {
@@ -68,7 +69,25 @@ class PermisosController extends Controller
         ]);
     }
 
-    public function CrearPermisosBasicos($iduser){
+    public function AddPermisoUser($iduser,$tipo){
 
+        $listOpcionesVer = [6,7,11,15,21,23,25,28,31,34];
+        
+        foreach ($listOpciones as $key => $value) {
+           
+            $acceso = GEOACCESOS::where('IDUSUARIO',$iduser)
+           ->where('IDOPCION',$value)
+           ->count(); 
+
+           if($acceso == 0){
+                $newAcceso = new GEOACCESOS();
+                $newAcceso->IDUSUARIO = $iduser;
+                $newAcceso->IDOPCION = $value;
+                $newAcceso->ESTADO = 'S';
+                $newAcceso->ESMENU = 'N';
+                $newAcceso->save();
+           }
+
+        }
     }
 }

@@ -99,13 +99,22 @@ Route::post('updateempresa','EmpresaController@UpdateEmpresa')->name('empresaupd
 Route::post('deleteempresa','EmpresaController@DeleteEmpresa')->name('empresadelete');
 
 
-//itmes bodega
+//items bodega
 Route::get('itembod','ItembodController@Index')->name('itembodindex');
 Route::get('crearitembod','ItembodController@CrearItembod')->name('itembodcrear');
 Route::post('guardaritembod','ItembodController@GuardaItembod')->name('itembodguardar');
 Route::get('editaritembod/{id}','ItembodController@EditarItembod')->name('itembodeditar');
 Route::post('updateitembod','ItembodController@UpdateItembod')->name('itembodupdate');
 Route::post('deleteitembod','ItembodController@DeleteItembod')->name('itemboddelete');
+
+//compras
+Route::get('compra','CompraController@Index')->name('compraindex');
+Route::get('crearcompra','CompraController@CrearCompra')->name('compracrear');
+Route::post('guardaritembod','ItembodController@GuardaItembod')->name('itembodguardar');
+Route::get('editaritembod/{id}','ItembodController@EditarItembod')->name('itembodeditar');
+Route::post('updateitembod','ItembodController@UpdateItembod')->name('itembodupdate');
+Route::post('deleteitembod','ItembodController@DeleteItembod')->name('itemboddelete');
+
 
 Route::post('authlogin','AuthController@Login')->name('authlogin');
 Route::get('createuser','AuthController@Createuser');

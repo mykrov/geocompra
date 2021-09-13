@@ -33,7 +33,6 @@
         </div>
         <div class="form-group mb-2 col-md-4">
             <button class="btn btn-primary buscar_permiso" >Buscar</button>
-            <button class="btn btn-primary actualiza_permiso" >Actualizar Permisos</button>
         </div>
     </form>
 </div>
@@ -72,7 +71,7 @@
                                         @endif
                                     >
                                         <span></span>
-                                        {{$opci->NOMBREOPCION . ' - '.$permiso}}
+                                        {{$opci->NOMBREOPCION }}
                                     </label>
                                 </div>
                             </div>                  
@@ -98,14 +97,14 @@
         e.preventDefault();
         let user = 0;
         user = $('#usuario').val();
-        
+        $(".loader").show();
         $.ajax({
             url: 'buscarpermisos/'+user ,
             type: 'GET',
             data: null,
             success: function (data) {
-                console.log(data);
                 $('#card-body-content').html(data);
+                $(".loader").hide();
             },
             cache: false,
             contentType: false,
@@ -141,24 +140,46 @@
             success: function (data) {
                 if(data.status == 'ok')
                 {                       
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Permiso Actualizado.',
-                        showConfirmButton: false,
-                        timer: 1200
-                    })                      
+                    Command: toastr["success"]("Permiso Cambiado", "Exito")
+
+                    toastr.options = {
+                    "closeButton": false,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": false,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": 200,
+                    "hideDuration": 300,
+                    "timeOut": 1000,
+                    "extendedTimeOut": 1000,
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                    }
                     
                 }else{
-                    console.log(data);
-                    swal({
-                        position: 'top-end',
-                        type: 'error',                          
-                        title: 'Error al Actualizar',
-                        text:data.message,
-                        showConfirmButton: false,
-                        timer: 1200
-                    }) 
+                    Command: toastr["error"]("Inconveniente al cambiar Permiso", "Error")
+
+                    toastr.options = {
+                    "closeButton": false,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": false,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": 200,
+                    "hideDuration": 300,
+                    "timeOut": 1000,
+                    "extendedTimeOut": 1000,
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                    }
                 }
                 //$('#card-body-content').html(data);
             },
