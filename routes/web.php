@@ -40,6 +40,7 @@ Route::post('guardarproducto','ProductoController@GuardaProducto')->name('produc
 Route::get('editarproducto/{id}','ProductoController@EditarProducto')->name('productoeditar');
 Route::post('updateproducto','ProductoController@UpdateProducto')->name('productoupdate');
 Route::post('deleteproducto','ProductoController@DeleteProducto')->name('productodelete');
+Route::get('productslist','ProductoController@getProductos');
 
 //Cantones
 

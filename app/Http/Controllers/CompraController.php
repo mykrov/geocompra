@@ -27,13 +27,30 @@ class CompraController extends Controller
     }
 
     public function CrearCompra(){
-        $proveedores = DB::table('GEOPROVEEDOR')->get();
-        $categorias = DB::table('GEOCATEGORIA')->get();
-        $marcas =  DB::table('GEOMARCA')->get();
+
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $idEmpresa = $empresadata['IDEMPRESA'];
+
+        $proveedores = DB::table('GEOPROVEEDOR')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get();
+        $categorias = DB::table('GEOCATEGORIA')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get();
+        $marcas =  DB::table('GEOMARCA')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get();
+
+        $bodegas = DB::table('GEOBODEGA')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get();
+       
         return view('compra.crearcompra',[
+            'bodegas'=>  $bodegas,
             'proveedores'=>$proveedores,
             'categorias'=>$categorias,
-            'marcas'=>$marcas
+            'marcas'=>$marcas,         
         ]);
     }
 

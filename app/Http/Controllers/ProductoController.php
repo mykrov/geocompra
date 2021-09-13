@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\GEOPRODUCTO;
 use Illuminate\Support\Facades\Log;
+use Session;
 
 
 class ProductoController extends Controller
@@ -213,5 +214,19 @@ class ProductoController extends Controller
             ]);
         }
         
+    }
+
+    public function getProductos(){
+
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $idEmpresa = $empresadata['IDEMPRESA'];
+
+        $productos = DB::table('GEOPRODUCTO')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get();
+
+        return response()->json(['productos'=>$productos,'status'=>'ok']);
+
     }
 }
