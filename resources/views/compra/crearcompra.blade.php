@@ -5,20 +5,26 @@
                                     
     <input name="id" type="hidden" class="form-control" id="id">
     <input name="_token" type="hidden" class="form-control" id="_token"   value="{{ csrf_token() }}">
-        
+    <div class="form-group mb-0 col-md-2" data-select6-id="6">
+        <label>Tipo Doc</label>
+        <select class="js-basic-single form-control" id="tipodoc" data-select6-id="1" tabindex="-1" aria-hidden="true">
+           <option value="FAC">Factura</option> 
+           <option value="NTV">Nota Venta</option>                           
+        </select>
+    </div>    
     <div class="form-group col-md-2">
         <label for="numfac">Número Factura</label>
         <input name="numfac" type="text" class="form-control" id="numfac"  maxlength="10"   aria-describedby="emailHelp" placeholder="" value="">
         <small id="numfac" class="form-text text-muted">Código primario del item.</small>
     </div>
-    <div class="form-group col-md-6">
+    <div class="form-group col-md-4">
         <label for="autorizacion">Autorización</label>
         <input name="autorizacion" type="text" class="form-control" maxlength="45" id="autorizacion" aria-describedby="emailHelp" placeholder="" value="">
         <small id="autorizacion" class="form-text text-muted">Número de Autorización</small>
     </div>
     <div class="form-group mb-0 col-md-4" data-select6-id="6">
         <label>Bodega (Compra Productos)</label>
-        <select class="js-basic-single form-control" name="bodegacompra" data-select6-id="1" tabindex="-1" aria-hidden="true">
+        <select class="js-basic-single form-control" id="bodegacompra" data-select6-id="1" tabindex="-1" aria-hidden="true">
             @foreach ($bodegas as $bodd)
                 <option value="{{$bodd->IDBODEGA }}" data-select6-id="1">{{$bodd->NOMBRECOMERCIAL}}</option>
             @endforeach                             
@@ -26,7 +32,7 @@
     </div>
     <div class="form-group mb-0 col-md-4" data-select6-id="6">
         <label>Bodega origen(Transferencia)</label>
-        <select class="js-basic-single form-control" name="bodegaori" data-select6-id="1" tabindex="-1" aria-hidden="true">
+        <select class="js-basic-single form-control" id="bodegaori" data-select6-id="1" tabindex="-1" aria-hidden="true">
             @foreach ($bodegas as $bod)
                 <option value="{{$bod->IDBODEGA }}" data-select6-id="1">{{$bod->NOMBRECOMERCIAL}}</option>
             @endforeach                             
@@ -34,7 +40,7 @@
     </div>
     <div class="form-group mb-0 col-md-4" data-select6-id="6">
         <label>Bodega Destino(Transferencia)</label>
-        <select class="js-basic-single form-control" name="bodegades" data-select6-id="1" tabindex="-1" aria-hidden="true">
+        <select class="js-basic-single form-control" id="bodegades" data-select6-id="1" tabindex="-1" aria-hidden="true">
             @foreach ($bodegas as $bodd)
                 <option value="{{$bodd->IDBODEGA }}" data-select6-id="1">{{$bodd->NOMBRECOMERCIAL}}</option>
             @endforeach                             
@@ -65,35 +71,35 @@
         <input name="fechaemi" type="date" class="form-control" id="fechaemi"  >
         <small class="form-text text-muted">Indique fecha</small>
     </div>
-    <div class="container">
-        <div class="row col-md-12">
-        <div class="row mb-2">
-            <button class="btn btn-primary boton-seleccionar" >Agregar Producto  <i class="fa fa-plus"></i></button>
-            <button class="btn btn-info boton-add ml-2" >Crear Producto  <i class="fa fa-plus"></i></button>
-        </div>    
-        
-        <table class="table data-table table-striped" id="tabla_detalles_compra">
-            <thead>
-                <tr>
-                    <th>Codigo</th>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Costo</th>
-                    <th>IVA</th>
-                    <th>NETO</th>
-                </tr>
-            </thead>
-            <tbody id="table_compra_detalles">
-
-            </tbody>
-        </table>
-    </div>
-    </div>
-    
-    <div class="form-group col-md-12 mt-3">
-        <button id="save_btn" type="submit" class="btn btn-primary mb-2">Guardar</button>
-    </div> 
 </form>
+<div class="row">
+    <div class="col-md-12 mb-2">
+        <div class="form-group col-md-4">
+            <button class="btn btn-primary boton-seleccionar" >Agregar Producto <i class="fa fa-plus"></i></button>
+            
+            <button class="btn btn-info boton-add ml-2" > Crear Producto  <i class="fa fa-plus"></i></button>
+        </div>
+    </div>         
+</div>
+<div class="table-responsive-sm">
+    <table class="table table-bordered table-striped" id="tabla_detalles_compra">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Costo</th>
+                <th>IVA</th>
+                <th>NETO</th>
+            </tr>
+        </thead>
+        <tbody id="table_compra_detalles">
+        </tbody>
+    </table>
+</div>
+<div class="form-group col-md-12 mt-3">
+    <button id="save_btn" type="submit" class="btn btn-primary mb-2">Guardar</button>
+</div> 
 <div class="modal fade" id="modal_producto" tabindex="-1" role="dialog" aria-labelledby="verticalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -177,7 +183,8 @@
             <div class="modal-body">
                 <table id="tabla_productos_seleccion" class="table data-table table-striped">
                     <thead>
-                        <tr>                            
+                        <tr> 
+                            <th>Identificador</th>                           
                             <th>Codigo</th> 
                             <th>Producto</th> 
                             <th>Agregar</th>                          
@@ -197,7 +204,7 @@
 <script>
 
     var tableSelec = $('#tabla_productos_seleccion').DataTable({
-        "scrollX": false,
+        "scrollX": true,
         "language": {
             "lengthMenu": "Mostrando _MENU_ por pagina",
             "zeroRecords": "...",
@@ -232,12 +239,16 @@
             type: 'GET',
             data: null,
             success: function (data) {
-                
+                var rows = tableSelec
+                    .rows()
+                    .remove()
+                    .draw();
                 if(data.status == 'ok')
                 {   
                     let productosResponse = data.productos;
                     $.each(productosResponse,function( key, value ){
                         tableSelec.row.add([
+                            value.IDPRODUCTO,
                             value.CODIGOPRI,
                             value.NOMBRE
                             
@@ -263,7 +274,7 @@
 
     $('#tabla_productos_seleccion tbody').on( 'click', 'a', function () {
         var data = tableSelec.row( $(this).parents('tr') ).data();
-        $('#tabla_detalles_compra').append('<tr><td ><input type="text" class="codigo_d" disabled="true" value="'+data[0]+'"></input></td><td><input type="text" class="nombre_d" disabled="true" value="'+data[1]+'"></td><td><input class="canti_d" type="number"></input></td><td><input class="costo_d" type="number"></input></td><td><input class="iva_d" type="number"></input></td><td><input class="neto_d" type="number"></input></td></tr>');
+        $('#tabla_detalles_compra').append('<tr><td ><input type="text" class="codigo_d" disabled="true" value="'+data[1]+'"></input></td><td><input type="text" class="nombre_d" data-id="'+data[0]+'" disabled="true" value="'+data[2]+'"></td><td><input class="canti_d" type="number"></input></td><td><input class="costo_d" type="number"></input></td><td><input class="iva_d" type="number"></input></td><td><input class="neto_d" type="number"></input></td></tr>');
     } );
     
     $('.add_producto_nuevo').on('click',function(e){
@@ -340,6 +351,18 @@
         let neto = $('#neto').val();
         let fechaemi= $('#fechaemi').val();
 
+        if(numfac == '' || autorizacion == '' || subtotal == '' || neto == '' || iva == '' || descuento == ''){
+            swal({
+                position: 'top-end',
+                type: 'error',                          
+                title: 'Error en datos de la compra',
+                text:'Debe indicar los datos del documento.',
+                showConfirmButton: false,
+                timer: 3200
+            }) 
+            return 0;    
+        }
+
         let cabecera = {
             'numfac':numfac,
             'autorizacion':autorizacion,
@@ -353,25 +376,63 @@
             'fechaemi':fechaemi,
         };
 
-        let detalle = {};
-
-        var table = document.getElementById("table_compra_detalles");
-       
+        let detalles = new Array();
         const table2 = document.getElementById("table_compra_detalles");  
         for (const row of table2.rows) {
             
+            let idproducto  = $(row).find('td').find('.nombre_d').data('id');
             let codigo  = $(row).find('td').find('.codigo_d').val();
             let nombre  =$(row).find('td').find('.nombre_d').val();
             let canti  = $(row).find('td').find('.canti_d').val();
             let precio  = $(row).find('td').find('.costo_d').val();
             let iva  = $(row).find('td').find('.iva_d').val();
             let neto  = $(row).find('td').find('.neto_d').val();
+
+            //alert(nombre +' el id es '+ idproducto);
+
+            if(canti == 0 || precio == 0 || neto == 0){
+                swal({
+                    position: 'top-end',
+                    type: 'error',                          
+                    title: 'Error en datos de Productos',
+                    text:'Debe indicar Cantidad, Costo y Neto.',
+                    showConfirmButton: false,
+                    timer: 3200
+                }) 
+                return 0;
+            }
             
-            detalle.append({'codigo':codigo,'nombre':nombre,'cantidad':canti,'precio':precio,'iva':iva,'neto':neto});      
+            detalles.push({'idproducto':idproducto,'nombre':nombre,'cantidad':canti,'precio':precio,'iva':iva,'neto':neto});      
         }
 
-        console.log(detalle) 
+        dataCompra = new Array();
+        dataCompra.push({'cabecera':cabecera,'detalles':detalles})
+        console.log(dataCompra) 
 
+        postData("{{ route('compraguardar') }}", dataCompra)
+        .then(data => {      
+            if(data.status == 'ok'){
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Compra Guardada.',
+                    showConfirmButton: false,
+                    timer: 1200
+                })                      
+                
+            }else{
+                console.log(data);
+                swal({
+                    position: 'top-end',
+                    type: 'error',                          
+                    title: 'Error al guardar Compras',
+                    text:data.message,
+                    showConfirmButton: false,
+                    timer: 3200
+                }) 
+            }                  
+            console.log({"respuesta":data}); // JSON data parsed by `data.json()` call
+        });
     });
 
     
@@ -383,7 +444,8 @@
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'same-origin', // include, *same-origin, omit
             headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': "{{ csrf_token() }}"
             // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             redirect: 'follow', // manual, *follow, error
@@ -393,9 +455,6 @@
         return response.json(); // parses JSON response into native JavaScript objects
     }
 
-    // postData('', { answer: 42 })
-    // .then(data => {
-    //     console.log(data); // JSON data parsed by `data.json()` call
-    // });
+    
 
 </script>

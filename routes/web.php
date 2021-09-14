@@ -111,7 +111,7 @@ Route::post('deleteitembod','ItembodController@DeleteItembod')->name('itemboddel
 //compras
 Route::get('compra','CompraController@Index')->name('compraindex');
 Route::get('crearcompra','CompraController@CrearCompra')->name('compracrear');
-Route::post('guardaritembod','ItembodController@GuardaItembod')->name('itembodguardar');
+Route::post('guardarcompra','CompraController@GuardaCompra')->name('compraguardar');
 Route::get('editaritembod/{id}','ItembodController@EditarItembod')->name('itembodeditar');
 Route::post('updateitembod','ItembodController@UpdateItembod')->name('itembodupdate');
 Route::post('deleteitembod','ItembodController@DeleteItembod')->name('itemboddelete');

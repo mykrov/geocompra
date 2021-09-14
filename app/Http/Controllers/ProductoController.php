@@ -43,6 +43,10 @@ class ProductoController extends Controller
     }
 
     public function GuardaProducto(Request $r){
+
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $idEmpresa = $empresadata['IDEMPRESA'];
             
         try {    
             $validator = $r->validate([
@@ -83,6 +87,7 @@ class ProductoController extends Controller
             $pro->IDMARCA= $r['idmarca'];
             $pro->COSTO= $r['costo'];
             $pro->IDPROVEEDOR= $r['proveedor'];
+            $pro->IDEMPRESA =$idEmpresa;
             
             try {
                 $pro->save();

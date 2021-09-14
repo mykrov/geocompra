@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class GEOCABINGRESO extends Model
 {
+    public $timestamps = false;
     /**
      * The table associated with the model.
      * 
