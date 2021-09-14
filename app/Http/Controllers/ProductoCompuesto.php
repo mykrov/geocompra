@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\GEOPRODUCTO;
+use App\GEOPROCOMPUESTO;
 use Illuminate\Support\Facades\Log;
 use Session;
 
@@ -41,7 +42,7 @@ class ProductoCompuesto extends Controller
         ]);
     }
 
-    public function GuardaProducto(Request $r){
+    public function GuardaProductoCompuesto(Request $r){
 
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
@@ -89,14 +90,17 @@ class ProductoCompuesto extends Controller
             $pro->IDEMPRESA =$idEmpresa;
             
             try {
+
+                DB::beginTransaction();
                 $pro->save();
-    
+                DB::commit();
                 return response()->json([
                     "status"=>"ok",
                     "success" => true,
-                    "message" => "Producto Guardado",
+                    "message" => "Producto Creado",
                     "logo" =>0,
-                    "firma" =>0
+                    "firma" =>0,
+                    "idproducto"=>$pro->IDPRODUCTO
                 ]); 
             } catch (\Throwable $th) {
                 return response()->json([
@@ -221,9 +225,41 @@ class ProductoCompuesto extends Controller
     }
 
     
-    public function GuardaProCompuesto(Request $r){
+    public function CrearSubProductos(Request $r){
         
-        $detalles = $r[0]['detalles'];
-    }
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $idEmpresa = $empresadata['IDEMPRESA'];
+        
+        $detalles = $r['productoshijos'];
+        Log::info(['Productos hijos'=> $detalles]);
+        
+        DB::beginTransaction();
+        foreach ($detalles as $key => $value) {
 
+            $subpro = new GEOPROCOMPUESTO();
+            $subpro->IDPRODUCTO = $value['idproducto'];
+            $subpro->CODPRINCIPAL = $value['idpadre'];
+            $subpro->NOMBREPRODUCTO = $value['nombre'];
+            $subpro->CANTIDAD = 1;
+
+            try {
+                $subpro->save();
+            } catch (\Throwable $th) {
+                Log::error($th->getMessage());
+                return response()->json([
+                    "status"=>"error",
+                    "success" => false,
+                    "message" => "error guardando producto compuesto."
+                ]);
+            }
+        }
+       
+        DB::commit();
+        return response()->json([
+            "status"=>"ok",
+            "success" => true,
+            "message" => "producto compuesto guardado."
+        ]);        
+    }
 }

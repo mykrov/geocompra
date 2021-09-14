@@ -15,8 +15,33 @@ class HomeController extends Controller
         
         if($request->session()->has('usuario'))
         {
-                  
-            return view('index',['pagina'=>'Inicio','seccion'=>'Datos']);
+            $session2 = Session::get('usuario');
+            $empresadata = $session2['empresa']; 
+            $idEmpresa = $empresadata['IDEMPRESA'];
+
+            $usuarios = DB::table('GEOUSUARIO')
+            ->where('IDEMPRESA',$idEmpresa)
+            ->get();
+
+            $facturas = DB::table('GEOCABFACTURA')
+            ->where('IDEMPRESA',$idEmpresa)
+            ->get();
+
+            $compras = DB::table('GEOCABINGRESO')
+            ->where('IDEMPRESA',$idEmpresa)
+            ->get();
+
+            $comisiones = DB::table('GEOCOMISIONES')
+            ->get();
+
+            return view('index',[
+                'facturas'=>$facturas,
+                'compras'=>$compras,
+                'usuarios'=>$usuarios,
+                'comisiones'=>$comisiones
+            ]);
+                    
+            //return view('index',['pagina'=>'Inicio','seccion'=>'Datos']);
         }else{
             return view('login');
         }  

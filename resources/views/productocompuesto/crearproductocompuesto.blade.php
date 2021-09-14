@@ -213,42 +213,38 @@ var tableSelec = $('#tabla_productos_seleccion').DataTable({
         console.log(formData);
         
         $.ajax({
-            url: '{{ route('productoguardar') }}' ,
+            url: "{{ route('guardaprocompu') }}",
             type: 'POST',
             data: formData,
             success: function (data) {
                 console.log(data);
                 if(data.status == 'ok')
                 {                       
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Producto Guardado.',
-                        showConfirmButton: false,
-                        timer: 1200
-                    }) 
-                    
+                   console.log('Producto Guardado ' + data.idproducto);
+                       
                     //envio de los detalles
-
+                    let idProPrincipal = data.idproducto;
                     let detalles = new Array();
                     const table2 = document.getElementById("table_compra_detalles");  
+                    
                     for (const row of table2.rows) {
                         
                         let idproducto  = $(row).find('td').find('.nombre_d').data('id');
                         let codigo  = $(row).find('td').find('.codigo_d').val();
                         let nombre  =$(row).find('td').find('.nombre_d').val();
                        
-                        detalles.push({'idproducto':idproducto,'nombre':nombre,'cantidad':canti,'precio':precio,'iva':iva,'neto':neto});      
+                        detalles.push({'idproducto':idproducto,'nombre':nombre,'idpadre':idProPrincipal});      
                     }
 
-
-                    postData("{{ route('compraguardar') }}", dataCompra)
+                    dataDetalles = {'productoshijos': detalles};
+                    
+                    postData("{{ route('subproductos') }}", dataDetalles)
                     .then(data => {      
                         if(data.status == 'ok'){
                             swal({
                                 position: 'top-end',
                                 type: 'success',
-                                title: 'Compra Guardada.',
+                                title: 'Producto Copuesto Guardado con exito.',
                                 showConfirmButton: false,
                                 timer: 1200
                             })                      
@@ -258,7 +254,7 @@ var tableSelec = $('#tabla_productos_seleccion').DataTable({
                             swal({
                                 position: 'top-end',
                                 type: 'error',                          
-                                title: 'Error al guardar Compras',
+                                title: 'Error al guardar producto',
                                 text:data.message,
                                 showConfirmButton: false,
                                 timer: 3200

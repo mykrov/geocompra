@@ -43,6 +43,8 @@ Route::post('deleteproducto','ProductoController@DeleteProducto')->name('product
 Route::get('productslist','ProductoController@getProductos');
 
 Route::get('creaprocompu','ProductoCompuesto@CreaProductoCompuesto')->name('creaprocompu');
+Route::post('subproductos','ProductoCompuesto@CrearSubProductos')->name('subproductos');
+Route::post('guardaprocompu','ProductoCompuesto@GuardaProductoCompuesto')->name('guardaprocompu');
 
 
 //Cantones

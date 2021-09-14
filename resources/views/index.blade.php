@@ -147,41 +147,13 @@
                 <!-- begin app-main -->
                 <div class="app-main" id="main">
                     <!-- begin container-fluid -->
-                    <div class="container-fluid">
-                        <!-- begin row -->
-                        <div class="row">
-                            <div class="col-md-12 m-b-30">
-                                {{-- <!-- begin page title -->
-                                <div class="d-block d-lg-flex flex-nowrap align-items-center">
-                                    <div class="page-title mr-4 pr-4 border-right">
-                                        <h1>{{ $pagina }}</h1>
-                                    </div>
-                                    <div class="breadcrumb-bar align-items-center">
-                                        <nav>
-                                            <ol class="breadcrumb p-0 m-b-0">
-                                                <li class="breadcrumb-item">
-                                                    <a href="{{route('index')}}"><i class="ti ti-home"></i></a>
-                                                </li>
-                                                <li class="breadcrumb-item">
-                                                    {{ $seccion }}
-                                                </li>
-                                                
-                                            </ol>
-                                        </nav>
-                                    </div>                                    
-                                </div>
-                                <!-- end page title --> --}}
-                            </div>
-                        </div>
-                        <!-- Notification -->
+                    <div class="container-fluid" style="padding-top:68px">                      
                         <div class="row">
                             <div class="col-md-12">
                                 @php
                                     $userDT2 = Session::get('usuario');
                                     $empresad =  $userDT2['empresa']; 
-                                @endphp  
-                                
-                                
+                                @endphp 
                                 <div class="card card-statistics">
                                     <div class="card-header">
                                         <div class="card-heading">
@@ -189,12 +161,53 @@
                                         </div>
                                     </div>
                                     <div class="card-body" id="card-body-content">
+                                        <div class="row">
+                                            <div class="col-xs-6 col-xxl-3 m-b-30">
+                                                <div class="card card-statistics h-100 m-b-0 bg-secondary">
+                                                    <div class="card-body">
+                                                        <h2 class="text-white mb-0">{{ count($usuarios)}}</h2>
+                                                        <p class="text-white">Usuarios</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6 col-xxl-3 m-b-30">
+                                                <div class="card card-statistics h-100 m-b-0 bg-primary">
+                                                    <div class="card-body">
+                                                        <h2 class="text-white mb-0">{{ count($facturas)}}</h2>
+                                                        <p class="text-white">Facturas </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6 col-xxl-3 m-b-30">
+                                                <div class="card card-statistics h-100 m-b-0 bg-orange">
+                                                    <div class="card-body">
+                                                        <h2 class="text-white mb-0">{{ count($compras)}}</h2>
+                                                        <p class="text-white">Compras </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6 col-xxl-3 m-b-30">
+                                                <div class="card card-statistics h-100 m-b-0 bg-info">
+                                                    <div class="card-body">
+                                                        @php
+                                                            $totalComision = 0;     
+                                                        @endphp
+                                                        @foreach ($comisiones as $item)
+                                                            {{$totalComision = $totalComision + $item->NETO}}
+                                                        @endforeach
+                                                        <h2 class="text-white mb-0">{{  $totalComision }}</h2>
+                                                        <p class="text-white">Comisiones</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                        
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!-- end row -->
+                       
               
                         <!-- event Modal -->
                         <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="verticalCenterTitle" aria-hidden="true">
@@ -241,9 +254,8 @@
             <footer class="footer">
                 <div class="row">
                     <div class="col-12 col-sm-6 text-center text-sm-left">
-                        <p>&copy; Copyright 2021. Birobid S.A.</p>
+                        <p>&copy; Copyright 2021.</p>
                     </div>
-                    
                 </div>
             </footer>
             <!-- end footer -->
