@@ -42,6 +42,9 @@ Route::post('updateproducto','ProductoController@UpdateProducto')->name('product
 Route::post('deleteproducto','ProductoController@DeleteProducto')->name('productodelete');
 Route::get('productslist','ProductoController@getProductos');
 
+Route::get('creaprocompu','ProductoCompuesto@CreaProductoCompuesto')->name('creaprocompu');
+
+
 //Cantones
 
 Route::get('canton','CatonController@Index')->name('cantonindex');
