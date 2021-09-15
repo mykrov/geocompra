@@ -18,25 +18,48 @@ class EmpresaController extends Controller
 {
     public function Index(){
 
+
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
+        $dataUsuario = $session2['usuario'];
         $idEmpresa = $empresadata['IDEMPRESA'];
+        $rol = Session::get('rol');
 
-        $items = DB::table('GEOEMPRESA')
-        ->join('GEOPROVINCIA','GEOPROVINCIA.IDPROVINCIA','GEOEMPRESA.IDPROVINCIA')       
-        ->select([
-            'GEOEMPRESA.IDEMPRESA',
-            'GEOEMPRESA.RAZONSOCIAL',
-            'GEOEMPRESA.RUC',
-            'GEOEMPRESA.CORREO',
-            'GEOPROVINCIA.NOMBRE as PROVINCIA',
-            'GEOEMPRESA.ESTADO',
-            'GEOEMPRESA.AMBIENTE',
-            'GEOEMPRESA.CONTRIBUYENTEESPECIAL',
-            'GEOEMPRESA.OBLIGADOCONTA',
-        ])
-        ->get();
-
+        Log::info('Empresa id '.$idEmpresa.' con el Usuario '.$dataUsuario['IDUSUARIO'].' ROl:'.$rol);
+        
+        if($rol == 'ADM'){
+            $items = DB::table('GEOEMPRESA')
+            ->join('GEOPROVINCIA','GEOPROVINCIA.IDPROVINCIA','GEOEMPRESA.IDPROVINCIA')       
+            ->select([
+                'GEOEMPRESA.IDEMPRESA',
+                'GEOEMPRESA.RAZONSOCIAL',
+                'GEOEMPRESA.RUC',
+                'GEOEMPRESA.CORREO',
+                'GEOPROVINCIA.NOMBRE as PROVINCIA',
+                'GEOEMPRESA.ESTADO',
+                'GEOEMPRESA.AMBIENTE',
+                'GEOEMPRESA.CONTRIBUYENTEESPECIAL',
+                'GEOEMPRESA.OBLIGADOCONTA',
+            ])
+            ->get();
+        }else{
+            $items = DB::table('GEOEMPRESA')
+            ->where('IDEMPRESA', $idEmpresa)
+            ->join('GEOPROVINCIA','GEOPROVINCIA.IDPROVINCIA','GEOEMPRESA.IDPROVINCIA')       
+            ->select([
+                'GEOEMPRESA.IDEMPRESA',
+                'GEOEMPRESA.RAZONSOCIAL',
+                'GEOEMPRESA.RUC',
+                'GEOEMPRESA.CORREO',
+                'GEOPROVINCIA.NOMBRE as PROVINCIA',
+                'GEOEMPRESA.ESTADO',
+                'GEOEMPRESA.AMBIENTE',
+                'GEOEMPRESA.CONTRIBUYENTEESPECIAL',
+                'GEOEMPRESA.OBLIGADOCONTA',
+            ])
+            ->get();
+        }
+       
         return view('empresa.index',['empresas'=>$items]);
     }
 

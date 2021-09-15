@@ -25,10 +25,24 @@ class AuthController extends Controller
             ]);
         }
 
+
+
         $check = GEOUSUARIO::where('CORREO',trim($email))->first();
         
+
         if($check){
-            if(Hash::check(trim($pass),$check->CLAVE)){
+
+            $valHash = substr($check->CLAVE,0,3);
+            $claveBase = $check->CLAVE;
+            
+            if($valHash == '$2y'){
+                Log::info('Login con hash de Laravel');
+            }else{
+                Log::info('Login con hash de Node');
+                $claveBase = str_replace("$2a$", "$2y$", $check->CLAVE);
+            }
+
+            if(Hash::check(trim($pass),$claveBase)){
 
                 $menus = DB::table('GEOMENU')
                 ->get();
@@ -48,17 +62,16 @@ class AuthController extends Controller
                 $empresa = GEOEMPRESA::where('IDEMPRESA',$check->IDEMPRESA)
                 ->first();
                 
-                Log::info(['id de empresa'=> $check->IDEMPRESA]);
-                Log::info(['empresa'=> $empresa]);
-               
                 
-                Session::put('usuario',['id'=>$check->IDUSUARIO,
+                Session::put('usuario',[
+                    'id'=>$check->IDUSUARIO,
                     'usuario'=>$check,
                     'empresa'=>$empresa
                 ]);
                 
                 Session::put('menus',$menus);
                 Session::put('submenus',$submenus);
+                Session::put('rol',$check->ROL);
 
                 return response()->json([
                     'status'=> 'ok'
