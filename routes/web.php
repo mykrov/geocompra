@@ -121,6 +121,10 @@ Route::get('editaritembod/{id}','ItembodController@EditarItembod')->name('itembo
 Route::post('updateitembod','ItembodController@UpdateItembod')->name('itembodupdate');
 Route::post('deleteitembod','ItembodController@DeleteItembod')->name('itemboddelete');
 
+//forma de pago
+Route::get('creaformapago','FormaPagoController@CrearFormaPago')->name('creaformapago');
+Route::post('guardaformapago','FormaPagoController@GuardaFormaPago')->name('guardaformapago');
+
 
 Route::post('authlogin','AuthController@Login')->name('authlogin');
 Route::get('createuser','AuthController@Createuser');
