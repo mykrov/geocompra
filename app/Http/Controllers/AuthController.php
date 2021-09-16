@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\GEOUSUARIO;
 use App\GEOEMPRESA;
+use App\Http\Controllers\PermisosController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -25,11 +26,8 @@ class AuthController extends Controller
             ]);
         }
 
-
-
         $check = GEOUSUARIO::where('CORREO',trim($email))->first();
         
-
         if($check){
 
             $valHash = substr($check->CLAVE,0,3);
@@ -43,9 +41,6 @@ class AuthController extends Controller
             }
 
             if(Hash::check(trim($pass),$claveBase)){
-
-                $menus = DB::table('GEOMENU')
-                ->get();
                 
                 $submenus = DB::table('GEOACCESOS')
                 ->where('GEOACCESOS.IDUSUARIO',$check->IDUSUARIO)
@@ -59,9 +54,34 @@ class AuthController extends Controller
                 )
                 ->get();
 
+                //Login de usuario recien creado desde la app
+                if(count($submenus) == 0){
+                    try {
+                        $genPermisos = new PermisosController();
+                        $genPermisos->AddPermisoUser($check->IDUSUARIO,'ADM');
+                    } catch (\Throwable $th) {
+                        Log::error('Error estableciendo los permisos inicales del usuario.');
+                        Log::error($th->getMessage());
+                    }
+
+                    $submenus = DB::table('GEOACCESOS')
+                    ->where('GEOACCESOS.IDUSUARIO',$check->IDUSUARIO)
+                    ->join('GEOOPCION','GEOACCESOS.IDOPCION','GEOOPCION.IDOPCION')
+                    ->select(
+                        'GEOOPCION.NOMBREOPCION',                        
+                        'GEOOPCION.IDOPCION',                        
+                        'GEOOPCION.IDMENU',                        
+                        'GEOOPCION.URLOPCION',
+                        'GEOACCESOS.ESMENU'
+                    )
+                    ->get();                   
+                }                
+
+                $menus = DB::table('GEOMENU')
+                ->get();                
+
                 $empresa = GEOEMPRESA::where('IDEMPRESA',$check->IDEMPRESA)
-                ->first();
-                
+                ->first();             
                 
                 Session::put('usuario',[
                     'id'=>$check->IDUSUARIO,

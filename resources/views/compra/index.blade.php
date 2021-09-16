@@ -44,7 +44,7 @@
 </table>
 <script>
     $('#table-compras').DataTable({
-        
+        "scrollX": true,
         "language": {
             "lengthMenu": "Mostrando _MENU_ registros por pagina",
             "zeroRecords": "Nada que mostrar",
