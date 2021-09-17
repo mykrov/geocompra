@@ -4,46 +4,38 @@
     </h4>
 </div>
 
-<table class="table data-table table-striped" id="table-compras">
+<table class="table data-table table-striped" id="table-ncr">
     <thead>
         <tr>
-            <th>Tipo</th>
             <th>Numero Factura</th>
-            <th>Autorizacion</th>       
-            <th>Bodega Origen</th>
-            <th>Bodega Destino</th>
+            <th>Fecha</th>
+            <th>Autorizacion</th>  
             <th>IVA</th>
             <th>Sub.Total</th>
             <th>Descuento</th>
             <th>Neto</th>
-            <th>Fecha</th>
-            <th>Hora</th>
             <th>Estado</th>
             <th>Ver</th>
         </tr>
     </thead>
     <tbody>
-        @foreach ($compras as $com)
+        @foreach ($ncrs as $ncr)
             <tr>
-                <td>{{ $com->TIPODOC }}</td>
-                <td>{{ $com->MUMEROFAC }}</td>
-                <td>{{ $com->NOAUTORIZACION }}</td>
-                <td>{{ $com->BODEGAORIGEN }}</td>
-                <td>{{ $com->BODEGADESTINO }}</td>
-                <td>{{ $com->IVA }}</td>
-                <td>{{ $com->SUBTOTAL }}</td>
-                <td>{{ $com->DESCUENTO }}</td>
-                <td>{{ $com->NETO }}</td>
-                <td>{{ $com->FECHAEMI }}</td>
-                <td>{{ $com->HORAEMI }}</td>
-                <td>{{ $com->ESTADO }}</td>
-                <td><a href="javascript:void(0);" data-id="{{$com->IDCABINGRESO}}" class="btn btn-icon btn-xs btn-info btn_editar"><i class="fa fa-edit"></i></a></td>
+                <td>{{ $ncr->SECFACTURA }}</td>
+                <td>{{ $ncr->FECHAEMI }}</td>
+                <td>{{ $ncr->NOAUTORIZACION }}</td>
+                <td>{{ $ncr->IVAFAC }}</td>
+                <td>{{ $ncr->SUBTOTALBNCR }}</td>
+                <td>{{ $ncr->DESCUENTONCR }}</td>
+                <td>{{ $ncr->NETOFAC }}</td>
+                <td>{{ $ncr->ESTADOPROCESO }}</td>
+                <td><a href="javascript:void(0);" data-id="{{$ncr->SECUENCIALNCR}}" class="btn btn-icon btn-xs btn-info btn_editar"><i class="fa fa-edit"></i></a></td>
             </tr>
         @endforeach
     </tbody>
 </table>
 <script>
-    $('#table-compras').DataTable({
+    $('#table-ncr').DataTable({
         "scrollX": true,
         "language": {
             "lengthMenu": "Mostrando _MENU_ registros por pagina",

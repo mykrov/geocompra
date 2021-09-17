@@ -125,6 +125,11 @@ Route::post('deleteitembod','ItembodController@DeleteItembod')->name('itemboddel
 Route::get('creaformapago','FormaPagoController@CrearFormaPago')->name('creaformapago');
 Route::post('guardaformapago','FormaPagoController@GuardaFormaPago')->name('guardaformapago');
 
+//NCR
+Route::get('ncr','NotaCreditoController@Index')->name('ncrindex');
+Route::get('crearncr','NotaCreditoController@CrearNotaCredito')->name('ncrcrear');
+Route::get('facturalist','NotaCreditoController@getFacturas')->name('getfacturas');
+
 
 Route::post('authlogin','AuthController@Login')->name('authlogin');
 Route::get('createuser','AuthController@Createuser');

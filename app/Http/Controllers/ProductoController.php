@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\GEOPRODUCTO;
+use App\GEOITEMBOD;
 use Illuminate\Support\Facades\Log;
 use Session;
 
@@ -91,6 +92,9 @@ class ProductoController extends Controller
             
             try {
                 $pro->save();
+
+                $proBod = new GEOITEMBOD();
+               // $proBod->
     
                 return response()->json([
                     "status"=>"ok",

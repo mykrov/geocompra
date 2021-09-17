@@ -307,10 +307,10 @@ class EmpresaController extends Controller
         }     
         
         $cont = GEOEMPRESA::where('RUC','=',trim($r['ruc']))
-        ->where('IDEMPRESA','<>',$idEmpresa)
+        ->where('IDEMPRESA','<>',$r['id'])
         ->count();
 
-        //Log::info(['count'=> $cont]);
+        Log::info(['count en el update'=> $cont]);
 
         $actualizaFirmaImagen = true;
 

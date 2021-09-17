@@ -165,7 +165,7 @@
     </div> 
 </form>
 <script>
-    
+    $('#ruc').attr("readonly",true);
     $('#firmaelectronica').on("change", function(){ 
         if (!hasExtension('firmaelectronica', ['.p12'])) {
             swal({

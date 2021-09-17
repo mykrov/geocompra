@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\GEOITEMBOD;
+use App\GEONCRCAB;
+use App\GEONCRDET;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use AuthComtroller;
 use Session;
+use Carbon\Carbon;
 
-class NotaCreaditoController extends Controller
+class NotaCreditoController extends Controller
 {
     public function Index(){
 
@@ -18,38 +20,28 @@ class NotaCreaditoController extends Controller
         $empresadata = $session2['empresa']; 
         $idEmpresa = $empresadata['IDEMPRESA'];
 
-        $ncr = DB::table('GEONCRCAB')
+        $ncrs = DB::table('GEONCRCAB')
         ->where('IDEMPRESA',$idEmpresa)
         ->get();
 
-        return view('ncr.index',['notascreditos'=> $ncr ]);
+        return view('ncr.index',['ncrs'=> $ncrs ]);
     }
 
-    public function CrearCompra(){
+    public function CrearNotaCredito(){
 
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $idEmpresa = $empresadata['IDEMPRESA'];
 
-        $proveedores = DB::table('GEOPROVEEDOR')
-        ->where('IDEMPRESA',$idEmpresa)
-        ->get();
-        $categorias = DB::table('GEOCATEGORIA')
-        ->where('IDEMPRESA',$idEmpresa)
-        ->get();
-        $marcas =  DB::table('GEOMARCA')
-        ->where('IDEMPRESA',$idEmpresa)
-        ->get();
-
         $bodegas = DB::table('GEOBODEGA')
         ->where('IDEMPRESA',$idEmpresa)
         ->get();
+
+        $motivos = DB::table('GEOMOTIVO')->get();
        
-        return view('compra.crearcompra',[
+        return view('ncr.crearncr',[
             'bodegas'=>  $bodegas,
-            'proveedores'=>$proveedores,
-            'categorias'=>$categorias,
-            'marcas'=>$marcas,         
+            'motivos'=>  $motivos                          
         ]);
     }
 
@@ -68,61 +60,68 @@ class NotaCreaditoController extends Controller
         ]);
     }
 
-    public function GuardaCompra(Request $r){
+    public function GuardaNcr(Request $r){
 
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
-        $idEmpresa = $empresadata['IDEMPRESA'];
+        $usuariodata=$session2['usuario'];
+        $idEmpresa = $empresadata['IDEMPRESA'];        
         
-        $cabecera = $r[0]['cabecera'];
-        $detalles = $r[0]['detalles'];
-
         try {    
 
-            if(count($detalles) == 0){
-                return response()->json([
-                    "status"=>"error",
-                    "success" => false,
-                    "message" => "Debe llenar detalles de productos en la compra.",
-                    "logo" =>0,
-                    "firma" =>0
-                ]);
-            }
+            $validator = $r->validate([
+                'facnumero' => 'required',
+                'clientenombre' =>'required',
+                'subtotalncr'=>'required',
+                'descuentoncr'=> 'required',
+                'idbodega'=>'required',
+                'idmotivo'=>'required'
+            ]);
 
         } catch (\Throwable $th) {
             return response()->json([
                 "status"=>"error",
                 "success" => false,
-                "message" => "Debe llenar todos los campos de la cabecera.",
+                "message" => "Debe llenar todos los campos del documento.",
                 "logo" =>0,
                 "firma" =>0
             ]);            
         } 
         
-        $cont = GEOCABINGRESO::where('NOAUTORIZACION',trim($cabecera['autorizacion']))->count();
+        $cont = GEONCRCAB::where('NOAUTORIZACION',trim($r['facnumero']))
+        ->where('IDMOTIVO',$r['idmotivo'])
+        ->count();
 
         if($cont == 0){
-            $cab = new GEOCABINGRESO();        
-           
-            $cab->TIPODOC = 'FAC';
-            $cab->MUMEROFAC = $cabecera['numfac'];
-            $cab->NOAUTORIZACION = $cabecera['autorizacion'];
-            $cab->BODEGAORIGEN = $cabecera['bodegaori'];
-            $cab->BODEGADESTINO = $cabecera['bodegades'];
-            $cab->IVA = $cabecera['iva'];
-            $cab->SUBTOTAL = $cabecera['subtotal'];
-            $cab->DESCUENTO = $cabecera['descuento'];
-            $cab->NETO = $cabecera['neto'];
-            $cab->FECHAEMI = $cabecera['fechaemi'];
-            $cab->HORAEMI = '10:00';
-            $cab->ESTADO = 'N';
-            $cab->IDUSUARIO =  $session2['id'];
-            $cab->IDEMPRESA = $idEmpresa;
             
-            
+            $date = Carbon::now();
+            $ncr = new GEONCRCAB(); 
+            $ncr->SUBTOTALBNCR= $r["subtotalncr"];
+            $ncr->DESCUENTONCR= $r["descuentoncr"];
+
+            $ncr->IVAFAC= $r["ivafac"];
+            $ncr->NETOFAC= $r["netofac"];
+            $ncr->FECHAEMI= $date->format('d-m-Y');
+            $ncr->SECFACTURA= $r["facsecuencial"];
+            $ncr->CLAVEACCESO= "";
+            $ncr->NOAUTORIZACION= "";
+            $ncr->ARCHIVOXML= "";
+            $ncr->FIRMAXML= "";
+            $ncr->ARCHIVOAUTORIZADO= "";
+            $ncr->ARCHIVOPDF= "";
+            $ncr->ARCHIVOERROR= "";
+            $ncr->CODERROR= "";
+            $ncr->FECHAPROCESO= $r[""];
+            $ncr->HORAPROCESO= $r[""];
+            $ncr->ESTADOPROCESO= 'N';
+            $ncr->IDUSUARIO= $usuariodata['IDUSUARIO'] ;
+            $ncr->MOTIVO= $r["idmotivo"];
+            $ncr->IDEMPRESA=$idEmpresa;
+            $ncr->IDBODEGA= $r["idbodega"];
+
             try {
                 DB::beginTransaction();
-                $cab->save();
+                $ncr->save();
 
                 foreach ($detalles as $key => $value) {
                     $deta = new GEOCDETINGRESO();
@@ -136,14 +135,13 @@ class NotaCreaditoController extends Controller
                     $deta->NETO = round($deta->SUBTOTAL + floatval($deta->IVA),2);
                     $deta->save();
                 }
-
-                Log::info(['id de la compra'=> $cab->IDCABINGRESO]);
+               
                 DB::commit();
     
                 return response()->json([
                     "status"=>"ok",
                     "success" => true,
-                    "message" => "Compra Guardada",
+                    "message" => "Nota de Credito Guardada",
                     "logo" =>0,
                     "firma" =>0
                 ]); 
@@ -152,7 +150,7 @@ class NotaCreaditoController extends Controller
                 return response()->json([
                     "status"=>"error",
                     "success" => false,
-                    "message" => "error guardando compras",
+                    "message" => "Error guardando Nota de Credito",
                     "logo" =>0,
                     "firma" =>0
                 ]);  
@@ -161,7 +159,7 @@ class NotaCreaditoController extends Controller
             return response()->json([
                 "status"=>"error",
                 "success" => false,
-                "message" => "Número de Autorización ya existe.",
+                "message" => "Ya existe una Nota de Credito en el Documento ".$r['facnumero']." con el motivo seleccionado.",
                 "logo" =>0,
                 "firma" =>0
             ]);
@@ -268,5 +266,25 @@ class NotaCreaditoController extends Controller
             ]);
         }
         
+    }
+
+    public function getFacturas(){
+
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $idEmpresa = $empresadata['IDEMPRESA'];
+
+        $facturas = DB::table('GEOCABFACTURA')
+        ->join('GEOCLIENTE','GEOCABFACTURA.CLIENTE','GEOCLIENTE.IDCLIENTE')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->select(['GEOCABFACTURA.NUMEROFAC',
+                'GEOCLIENTE.NOMBRECLIENTE',
+                'GEOCABFACTURA.FECHAEMI',
+                'GEOCLIENTE.IDCLIENTE',
+                'GEOCABFACTURA.SECUENCIAL'])
+        ->get();
+
+        return response()->json(['facturas'=>$facturas,'status'=>'ok']);
+
     }
 }
