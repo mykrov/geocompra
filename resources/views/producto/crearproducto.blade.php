@@ -23,13 +23,13 @@
     </div>
     <div class="form-group col-md-2">
         <label for="precio">Precio</label>
-        <input name="precio" type="number" class="form-control" id="precio" aria-describedby="emailHelp" placeholder="" value="">
-        <small id="precio" class="form-text text-muted">precio del item</small>
+        <input name="precio" type="decimal" class="form-control" id="precio"  placeholder="" value="">
+        <small  class="form-text text-muted">precio del item</small>
     </div>   
     <div class="form-group col-md-2">
         <label for="costo">Costo</label>
-        <input name="costo" type="number" class="form-control" id="costo" aria-describedby="emailHelp" placeholder="" value="">
-        <small id="costo" class="form-text text-muted">costo del item.</small>
+        <input name="costo" type="decimal" class="form-control" id="costo"  placeholder="" value="">
+        <small  class="form-text text-muted">costo del item.</small>
     </div> 
     <div class="form-group mb-0 col-md-2" data-select6-id="6">
         <label>Graba IVA</label>
@@ -74,6 +74,16 @@
             @endforeach                             
         </select>
     </div> 
+    @if (Session::get('rol') == 'PRO')
+    <div class="form-group mb-0 col-md-4" data-select6-id="6">
+        <label>Empresa</label>
+        <select class="js-basic-single form-control" name="idempresa" data-select6-id="1" tabindex="-1" aria-hidden="true">
+            @foreach ($empresas as $empre)
+                <option value="{{$empre->IDEMPRESA }}" data-select6-id="1">{{ $empre->RAZONSOCIAL }}</option>
+            @endforeach                             
+        </select>
+    </div>
+    @endif
     <div class="form-group col-md-12 mt-3">
         <button id="save_btn" type="submit" class="btn btn-primary mb-2">Guardar</button>
     </div> 

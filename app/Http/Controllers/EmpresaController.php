@@ -27,7 +27,7 @@ class EmpresaController extends Controller
 
         Log::info('Empresa id '.$idEmpresa.' con el Usuario '.$dataUsuario['IDUSUARIO'].' ROl:'.$rol);
         
-        if($rol == 'ADM'){
+        if($rol == 'PRO'){
             $items = DB::table('GEOEMPRESA')
             ->join('GEOPROVINCIA','GEOPROVINCIA.IDPROVINCIA','GEOEMPRESA.IDPROVINCIA')       
             ->select([

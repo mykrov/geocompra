@@ -13,7 +13,7 @@
     </div>
     <div class="form-group col-md-2">
         <label for="serie">Serie</label>
-        <input name="serie" type="text" class="form-control" maxlength="15" id="serie" aria-describedby="emailHelp" placeholder="" value="">
+        <input name="serie" type="text" class="form-control" maxlength="6" id="serie" aria-describedby="emailHelp" placeholder="" value="">
         <small id="serie" class="form-text text-muted">serie</small>
     </div>
     <div class="form-group col-md-4">
@@ -56,6 +56,16 @@
         <input name="longitud" type="text" class="form-control" id="longitud" aria-describedby="emailHelp" placeholder="" value="">
         <small id="longitud" class="form-text text-muted">longitud</small>
     </div>
+    @if (Session::get('rol') == 'PRO')
+        <div class="form-group mb-0 col-md-4" data-select6-id="6">
+            <label>Empresa</label>
+            <select class="js-basic-single form-control" name="idempresa" id="idempresa" data-select6-id="1" tabindex="-1" aria-hidden="true">
+                @foreach ($empresas as $empre)
+                    <option value="{{$empre->IDEMPRESA }}" data-select6-id="1">{{ $empre->RAZONSOCIAL }}</option>
+                @endforeach                             
+            </select>
+        </div>
+    @endif 
   
     <div class="form-group col-md-12 mt-3">
         <button id="save_btn" type="submit" class="btn btn-primary mb-2">Guardar</button>

@@ -157,7 +157,12 @@
                                 <div class="card card-statistics">
                                     <div class="card-header">
                                         <div class="card-heading">
-                                            <h4 class="card-title">{{ $empresad->RAZONSOCIAL }} - {{ $empresad->CORREO }}</h4>
+                                            <h4 class="card-title">{{ $empresad->RAZONSOCIAL }} - {{ $empresad->CORREO }}
+                                            @if (Session::get('rol') == 'PRO')
+                                               <p style='color:red; font-weight: 500'> PROPIETARIO DEL SISTEMA<p>
+                                            @endif
+                
+                                            </h4>
                                         </div>
                                     </div>
                                     <div class="card-body" id="card-body-content">

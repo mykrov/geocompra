@@ -23,11 +23,16 @@ class MarcaController extends Controller
         ->where('IDEMPRESA',$idEmpresa)
         ->get();
 
+        if(Session::get('rol')=='PRO'){
+            $items = DB::table('GEOMARCA')->get();
+        }
+
         return view('marca.index',['marcas'=>$items]);
     }
 
     public function CrearMarca(){
-        return view('marca.crearmarca');
+        $empresas = DB::table('GEOEMPRESA')->get();
+        return view('marca.crearmarca',['empresas'=>$empresas]);
     }
 
     public function EditarMarca($id){       
@@ -59,6 +64,10 @@ class MarcaController extends Controller
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $idEmpresa = $empresadata['IDEMPRESA'];
+
+        if(Session::get('rol') == 'PRO'){
+            $idEmpresa = $r['idempresa'];
+        }
 
         $cont = GEOMARCA::where('NOMBRE',trim($r['nombre']))
         ->where('IDEMPRESA',$idEmpresa)

@@ -146,7 +146,7 @@ class AuthController extends Controller
         ->where('ESTADO','S')
         ->count();
 
-        if( $avalible){
+        if($avalible){
             return true;
         }else{
             return false;

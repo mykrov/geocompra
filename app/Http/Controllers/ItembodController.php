@@ -44,11 +44,14 @@ class ItembodController extends Controller
 
         $bodegas = DB::table('GEOBODEGA')->where('IDEMPRESA',$idEmpresa)->get();
 
-        $categorias = DB::table('GEOCATEGORIA')->get();
-        $marcas =  DB::table('GEOMARCA')->get();
+        $categorias = DB::table('GEOCATEGORIA')->where('IDEMPRESA',$idEmpresa)->get();
+        $marcas =  DB::table('GEOMARCA')->where('IDEMPRESA',$idEmpresa)->get();
+        $empresas = DB::table('GEOEMPRESA')->get();
+
         return view('itembod.crearitembod',[
             'productos'=>$productos,
-            'bodegas'=> $bodegas
+            'bodegas'=> $bodegas,
+            'empresas'=>$empresas
            
         ]);
     }
@@ -63,14 +66,22 @@ class ItembodController extends Controller
         ->where('IDEMPRESA',$idEmpresa)
         ->get();
 
-        $bodegas = DB::table('GEOBODEGA')->where('IDEMPRESA',$idEmpresa)->get();
+        $bodegas = DB::table('GEOBODEGA')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get();
+
+        if(Session::get('rol') == 'PRO'){
+            $productos = DB::table('GEOPRODUCTO')->get();
+            $bodegas = DB::table('GEOBODEGA')->get();
+        }
+
+        
         $item = GEOITEMBOD::where('IDITEMBOD',$id)->first();
        
         return view('itembod.editaritembod',[
             'productos'=>$productos,
             'bodegas'=> $bodegas,
             'itembod'=>$item
-           
         ]);
     }
 

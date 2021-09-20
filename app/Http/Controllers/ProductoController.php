@@ -13,26 +13,54 @@ use Session;
 class ProductoController extends Controller
 {
     public function Index(){
-        $productos = DB::table('GEOPRODUCTO')->get();
+       
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $dataUsuario = $session2['usuario'];
+        $idEmpresa = $empresadata['IDEMPRESA'];
+        $rol = Session::get('rol');
+
+        $productos = DB::table('GEOPRODUCTO')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get();
+
         return view('producto.index',['productos'=>$productos]);
     }
 
     public function CrearProducto(){
-        $proveedores = DB::table('GEOPROVEEDOR')->get();
-        $categorias = DB::table('GEOCATEGORIA')->get();
-        $marcas =  DB::table('GEOMARCA')->get();
+
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $dataUsuario = $session2['usuario'];
+        $idEmpresa = $empresadata['IDEMPRESA'];
+        $rol = Session::get('rol');
+
+        $proveedores = DB::table('GEOPROVEEDOR')->where('IDEMPRESA',$idEmpresa)->get();
+        $categorias = DB::table('GEOCATEGORIA')->where('IDEMPRESA',$idEmpresa)->get();
+        $marcas =  DB::table('GEOMARCA')->where('IDEMPRESA',$idEmpresa)->get();
+
+        if(Session::get('rol')=='PRO'){
+            $proveedores = DB::table('GEOPROVEEDOR')->get();
+            $categorias = DB::table('GEOCATEGORIA')->get();
+            $marcas =  DB::table('GEOMARCA')->get();
+        }
+
+
+        $empresas = DB::table('GEOEMPRESA')->get();
+        
         return view('producto.crearproducto',[
             'proveedores'=>$proveedores,
             'categorias'=>$categorias,
-            'marcas'=>$marcas
+            'marcas'=>$marcas,
+            'empresas'=>$empresas
         ]);
     }
 
     public function EditarProducto($id){
         
-        $proveedores = DB::table('GEOPROVEEDOR')->get();
-        $categorias = DB::table('GEOCATEGORIA')->get();
-        $marcas =  DB::table('GEOMARCA')->get();
+        $proveedores = DB::table('GEOPROVEEDOR')->where('IDEMPRESA',$idEmpresa)->get();
+        $categorias = DB::table('GEOCATEGORIA')->where('IDEMPRESA',$idEmpresa)->get();
+        $marcas =  DB::table('GEOMARCA')->where('IDEMPRESA',$idEmpresa)->get();
         $producto = GEOPRODUCTO::where('IDPRODUCTO',$id)->first();
 
         return view('producto.editarproducto',[
@@ -48,6 +76,10 @@ class ProductoController extends Controller
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $idEmpresa = $empresadata['IDEMPRESA'];
+
+        if(Session::get('rol')== 'PRO'){
+            $idEmpresa = $r['idempresa'];
+        }
             
         try {    
             $validator = $r->validate([
@@ -89,12 +121,14 @@ class ProductoController extends Controller
             $pro->COSTO= $r['costo'];
             $pro->IDPROVEEDOR= $r['proveedor'];
             $pro->IDEMPRESA =$idEmpresa;
+
+            
             
             try {
+                DB::beginTransaction();
                 $pro->save();
-
-                $proBod = new GEOITEMBOD();
-               // $proBod->
+                $this->AddOnBod($idEmpresa,$pro->IDPRODUCTO,0);
+                DB::commit();
     
                 return response()->json([
                     "status"=>"ok",
@@ -237,5 +271,29 @@ class ProductoController extends Controller
 
         return response()->json(['productos'=>$productos,'status'=>'ok']);
 
+    }
+
+    public function AddOnBod($idEmpresa,$idProducto,$stock){
+       
+        $bodega = DB::table('GEOBODEGA')
+        ->where('IDEMPRESA', $idEmpresa)
+        ->orderBy('IDBODEGA','desc')
+        ->limit(1)
+        ->get();
+
+        Log::info(['Bodega para item Nuevo'=>$bodega]);
+
+        try {
+            $proBod = new GEOITEMBOD();
+            $proBod->IDPRODUCTO = $idProducto;
+            $proBod->IDBODEGA = $bodega[0]->IDBODEGA;
+            $proBod->STOCK = $stock;
+            $proBod->save();
+        } catch (\Throwable $th) {
+            
+            Log::error('Error Guardando Item en la bodega'); 
+            Log::error($th->getMessage());       
+        }
+        
     }
 }

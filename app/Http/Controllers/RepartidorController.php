@@ -42,6 +42,10 @@ class RepartidorController extends Controller
         ->where('IDEMPRESA',$idEmpresa)
         ->get();
 
+        if(Session::get('rol') == 'PRO'){
+            $usuarios = DB::table('GEOUSUARIO')->get();
+        }
+
         return view('repartidor.crearrepartidor',['usuarios'=>$usuarios]);
     }
 

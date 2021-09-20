@@ -17,9 +17,24 @@ class ProductoCompuesto extends Controller
     }
 
     public function CreaProductoCompuesto(){
-        $proveedores = DB::table('GEOPROVEEDOR')->get();
-        $categorias = DB::table('GEOCATEGORIA')->get();
-        $marcas =  DB::table('GEOMARCA')->get();
+
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $dataUsuario = $session2['usuario'];
+        $idEmpresa = $empresadata['IDEMPRESA'];
+        $rol = Session::get('rol');
+        
+        $proveedores = DB::table('GEOPROVEEDOR')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get();
+        
+        $categorias = DB::table('GEOCATEGORIA')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get();
+        
+        $marcas =  DB::table('GEOMARCA')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get();
         return view('productocompuesto.crearproductocompuesto',[
             'proveedores'=>$proveedores,
             'categorias'=>$categorias,

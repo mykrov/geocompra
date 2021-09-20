@@ -26,7 +26,8 @@ class CategoriaController extends Controller
     }
 
     public function CrearCategoria(){
-        return view('categoria.crearcategoria');
+        $empresas = DB::table('GEOEMPRESA')->get();
+        return view('categoria.crearcategoria',['empresas'=>$empresas]);
     }
 
     public function EditarCategoria($id){       
@@ -58,6 +59,10 @@ class CategoriaController extends Controller
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $idEmpresa = $empresadata['IDEMPRESA'];
+
+        if(Session::get('rol')=='PRO'){
+            $idEmpresa = $r['idempresa'];
+        }
 
         $cont = GEOCATEGORIA::where('NOMBRE',trim($r['nombre']))
         ->where('IDEMPRESA',$idEmpresa)

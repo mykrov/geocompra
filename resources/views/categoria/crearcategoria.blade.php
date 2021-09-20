@@ -10,7 +10,19 @@
         <label for="nombre">Nombre</label>
         <input name="nombre" type="text" class="form-control" id="nombre"  maxlength="15"   aria-describedby="emailHelp" placeholder="" value="">
         <small id="nombre" class="form-text text-muted">Nombre de Categoria.</small>
-    </div>   
+    </div> 
+    
+    @if (Session::get('rol') == 'PRO')
+        <div class="form-group mb-0 col-md-4" data-select6-id="6">
+            <label>Empresa</label>
+            <select class="js-basic-single form-control" name="idempresa" data-select6-id="1" tabindex="-1" aria-hidden="true">
+                @foreach ($empresas as $empre)
+                    <option value="{{$empre->IDEMPRESA }}" data-select6-id="1">{{ $empre->RAZONSOCIAL }}</option>
+                @endforeach                             
+            </select>
+        </div>
+    @endif  
+   
     
     <div class="form-group col-md-12 mt-3">
         <button id="save_btn" type="submit" class="btn btn-primary mb-2">Guardar</button>

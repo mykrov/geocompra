@@ -10,10 +10,9 @@ use Illuminate\Support\Facades\DB;
 
 class FormaPagoController extends Controller
 {
-    public function CrearFormaPago(){
+    public function CrearFormaPago(){      
         
         if(Session::get('usuario')){
-
             $session2 = Session::get('usuario');
             $empresadata = $session2['empresa']; 
             $idEmpresa = $empresadata['IDEMPRESA'];
@@ -21,16 +20,17 @@ class FormaPagoController extends Controller
             $formap = DB::table('GEODETFORMAPAGO')
             ->where('IDEMPRESA',$idEmpresa)
             ->get();
+            $empresas = DB::table('GEOEMPRESA')->get();
 
             if(count($formap) == 1){
-                return view('formapago.crearformapago',['detformapago'=> $formap]);
+                return view('formapago.crearformapago',['detformapago'=> $formap,['empresas'=>$empresas]]);
             }else{
-                return view('formapago.crearformapago');
-            }    
-
+                
+                return view('formapago.crearformapago',['empresas'=>$empresas]);
+            } 
         }else{
-
-            return view('formapago.crearformapago');
+            $empresas = DB::table('GEOEMPRESA')->get();
+            return view('formapago.crearformapago',['empresas'=>$empresas]);
         }
         
     }
@@ -48,6 +48,10 @@ class FormaPagoController extends Controller
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $idEmpresa = $empresadata['IDEMPRESA'];
+
+        if(Session::get('rol')=='PRO'){
+            $idEmpresa = $r['idempresa'];
+        }
 
         try {
             if($efec == 'on'){

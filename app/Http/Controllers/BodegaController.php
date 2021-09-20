@@ -26,10 +26,29 @@ class BodegaController extends Controller
     }
 
     public function CrearBodega(){
-        return view('bodega.crearbodega');
+       
+        $idOpcion = 12;
+        $check_permiso = new AuthController(); 
+
+        if($check_permiso->IsAuthorized($idOpcion) == false){
+            return response()->json([
+                "status"=>"error",
+                "success" => false,
+                "message" => "No tiene permiso para la acción.",
+                "logo" =>0,
+                "firma" =>0
+            ]);  
+        }else{
+
+            $empresas = DB::table('GEOEMPRESA')->get();
+            return view('bodega.crearbodega',['empresas'=>$empresas]);
+        }       
     }
 
-    public function EditarBodega($id){       
+    public function EditarBodega($id){   
+        
+        $idOpcion = 135; 
+
         $bod = DB::table('GEOBODEGA')
         ->where('IDBODEGA',$id)
         ->first();
@@ -37,8 +56,18 @@ class BodegaController extends Controller
     }
 
     public function GuardaBodega(Request $r){
-
-        $permisoID = 2;
+        Log::info($r);
+        $permisoID = 12;
+        $check_permiso = new AuthController(); 
+        if($check_permiso->IsAuthorized($permisoID) == false){
+            return response()->json([
+                "status"=>"error",
+                "success" => false,
+                "message" => "No tiene permiso para la acción.",
+                "logo" =>0,
+                "firma" =>0
+            ]);  
+        }
             
         try {    
             $validator = $r->validate([
@@ -82,7 +111,14 @@ class BodegaController extends Controller
             $bod->NOGUIAREMISION = $r['nguiarem'];
             $bod->LATITUD = $r['latitud'];
             $bod->LONGITUD = $r['longitud'];
+            
             $bod->IDEMPRESA = $idEmpresa ;
+
+            if(Session::get('rol') == 'PRO'){
+                Log::info('crea bodega desde cuenta PRO hacia la empresa ' . $r['idempresa']);
+                $bod->IDEMPRESA = $r['idempresa'] ;
+            }
+
             $bod->TELEFONO = $r['telefono'];
             $bod->CORREO = $r['correo'];
             $bod->DIRECCION = $r['direccion'];
@@ -97,6 +133,7 @@ class BodegaController extends Controller
                     "logo" =>0,
                     "firma" =>0
                 ]); 
+
             } catch (\Throwable $th) {
                 Log::error($th->getMessage());
                 return response()->json([
@@ -118,16 +155,16 @@ class BodegaController extends Controller
         }
     }
 
-    public function UpdateBodega(Request $r){
-        
-        $check_permiso = new AuthController();        
+    public function UpdateBodega(Request $r){           
         
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $usuariodata = $session2['usuario'];
         $idEmpresa = $empresadata['IDEMPRESA']; 
+        $idOpcion = 13;
 
-        if($check_permiso->IsAuthorized(13) == false){
+        $check_permiso = new AuthController(); 
+        if($check_permiso->IsAuthorized($idOpcion) == false){
             return response()->json([
                 "status"=>"error",
                 "success" => false,
@@ -216,6 +253,17 @@ class BodegaController extends Controller
     }
 
     public function DeleteBodega(Request $r){
+
+        $check_permiso = new AuthController(); 
+        if($check_permiso->IsAuthorized(14) == false){
+            return response()->json([
+                "status"=>"error",
+                "success" => false,
+                "message" => "No tiene permiso para la acción.",
+                "logo" =>0,
+                "firma" =>0
+            ]);  
+        }
         
         $ID = $r['idProducto'];
         $pro = GEOPRODUCTO::where('IDPRODUCTO',$ID)->first();
