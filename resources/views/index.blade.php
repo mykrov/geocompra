@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/vendors.css" />
     <!-- app style -->
     <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+   
 </head>
 
 <body>
@@ -274,6 +275,12 @@
 
     <!-- custom app -->
     <script src="assets/js/app.js"></script>
+    
+    <script src="assets/js/dtutils/dataTables.buttons.min.js"></script>
+    <script src="assets/js/dtutils/buttons.html5.min.js"></script>
+    <script src="assets/js/dtutils/pdfmake.min.js"></script>
+    <script src="assets/js/dtutils/vfs_fonts.js"></script>
+   
 
     <script>     
     

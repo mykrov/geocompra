@@ -36,6 +36,11 @@
 </table>
 <script>
     $('#table-ncr').DataTable({
+        "dom": 'Bfrtip',
+        "buttons": [
+            'excel',
+            'pdfHtml5'
+        ],
         "scrollX": true,
         "language": {
             "lengthMenu": "Mostrando _MENU_ registros por pagina",
@@ -53,6 +58,7 @@
         }
     });
 
+    $('.buttons-html5').addClass('btn btn-primary');
     $('.btn_editar').on('click',function(){
         
         let idProducto = 0;
