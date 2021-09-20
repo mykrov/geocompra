@@ -269,6 +269,10 @@ class ProductoController extends Controller
         ->where('IDEMPRESA',$idEmpresa)
         ->get();
 
+        if(Session::get('rol') == 'PRO'){
+            $productos = DB::table('GEOPRODUCTO')->get();
+        }
+
         return response()->json(['productos'=>$productos,'status'=>'ok']);
 
     }

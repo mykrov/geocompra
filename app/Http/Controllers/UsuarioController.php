@@ -14,24 +14,52 @@ class UsuarioController extends Controller
 {
     
     public function Index(){
-        $items = DB::table('GEOUSUARIO')->get();
+
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $idEmpresa = $empresadata['IDEMPRESA'];
+
+        $items = DB::table('GEOUSUARIO')->where('IDEMPRESA',$idEmpresa)->get();
+
+        if(Session::get('rol') == 'PRO'){
+            $items = DB::table('GEOUSUARIO')->get();
+        }
+
         return view('usuario.index',['usuarios'=>$items]);
     }
 
     public function CrearUsuario(){
-        $roles = DB::table('GEOROLES')->get();
-        $bodegas = DB::table('GEOBODEGA')->get();
+
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $idEmpresa = $empresadata['IDEMPRESA'];
+        
+        $roles = DB::table('GEOROLES')->where('IDROLES','<>','PRO')->get();
+        $bodegas = DB::table('GEOBODEGA')->where('IDEMPRESA',$idEmpresa)->get();
+        
+        if(Session::get('rol') == 'PRO'){
+            $roles = DB::table('GEOROLES')->get();
+            $bodegas = DB::table('GEOBODEGA')->get();
+        }
+        $empresas = DB::table('GEOEMPRESA')->get();       
         
         return view('usuario.crearusuario',[
             'roles'=>$roles,
-            'bodegas'=>$bodegas            
+            'bodegas'=>$bodegas,
+            'empresas'=>$empresas            
         ]);
     }
 
     public function EditarUsuario($id){
+
+        $roles = DB::table('GEOROLES')->where('IDROLES','<>','PRO')->get();
+        $bodegas = DB::table('GEOBODEGA')->where('IDEMPRESA',$idEmpresa)->get();
         
-        $roles = DB::table('GEOROLES')->get();
-        $bodegas = DB::table('GEOBODEGA')->get();
+        if(Session::get('rol') == 'PRO'){
+            $roles = DB::table('GEOROLES')->get();
+            $bodegas = DB::table('GEOBODEGA')->get();
+        }    
+        
         $usuario = GEOUSUARIO::where('IDUSUARIO',$id)->first();
 
         return view('usuario.editarusuario',[
@@ -70,6 +98,11 @@ class UsuarioController extends Controller
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $idEmpresa = $empresadata['IDEMPRESA'];
+
+        if(Session::get('rol') == 'PRO'){
+            $idEmpresa = $r['idempresa'];
+        }
+
 
         $cont = GEOUSUARIO::where('CEDULA',trim($r['cedula']))
         ->where('IDEMPRESA',$idEmpresa)
