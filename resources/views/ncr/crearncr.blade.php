@@ -57,10 +57,36 @@
             </select>
         </div>
     </div>
-    <div class="form-group col-md-12 mt-3">
-        <button id="save_btn" type="submit" class="btn btn-primary mb-2">Guardar</button>
-    </div> 
+    
 </form>
+<button class="btn btn-primary boton-seleccionar-pro mb-2" >Agregar Producto <i class="fa fa-plus"></i></button>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-responsive" id="tabla_detalles_ncr">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>SubTotal</th>
+                        <th>Descuento</th>
+                        <th>IVA</th>
+                        <th>Neto</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_produtos_ncr">
+    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="form-group col-md-12 mt-3">
+    <button id="save_btn" type="submit" class="btn btn-primary mb-2">Guardar</button>
+</div> 
+
 <div class="modal fade" id="modal_tabla_facturas" tabindex="-1" role="dialog" aria-labelledby="verticalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -92,7 +118,62 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="modal_tabla_productos" tabindex="-1" role="dialog" aria-labelledby="verticalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verticalCenterTitle">Seleccione Producto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table id="tabla_productos_seleccion" class="table data-table table-striped">
+                    <thead>
+                        <tr> 
+                            <th>Identificador</th>                           
+                            <th>Codigo</th> 
+                            <th>Producto</th> 
+                            <th>Agregar</th>                          
+                        </tr>
+                    </thead>
+                    <tbody id="table_produto_seleccionar">
+        
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>                
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    var tableSelec2 = $('#tabla_productos_seleccion').DataTable({
+        "scrollX": true,
+        "language": {
+            "lengthMenu": "Mostrando _MENU_ por pagina",
+            "zeroRecords": "...",
+            "info": "Mostrando pagina _PAGE_ de _PAGES_",
+            "infoEmpty": "Sin registros disponibles",
+            "infoFiltered": "(filtered from _MAX_ total records)",
+            "search": "Busq.",
+            "paginate": {
+                "first":      "Primero",
+                "last":       "Ultimo",
+                "next":       "Siguiente",
+                "previous":   "Anterior"
+            },
+        },
+        "columnDefs": [ {
+            "targets": -1,
+            "data": null,
+            "defaultContent": '<a href="javascript:void(0);" class=" btn btn-icon btn-xs btn-inverse-primary"><i class="fa fa-plus"></i></a>'
+        } ]
+    });
+
+
+   
 
     $('#facnumero').attr('readonly', true);
     $('#clientenombre').attr('readonly', true);
@@ -120,6 +201,65 @@
             "defaultContent": '<a href="javascript:void(0);" class=" btn btn-icon btn-xs btn-inverse-primary"><i class="fa fa-plus"></i></a>'
         } ]
     });
+
+    // $('.boton-add-pro').on('click',function(e){
+    //     e.preventDefault();
+    //     $('#modal_tabla_productos').modal('show'); 
+    // });
+
+   
+    $('.boton-seleccionar-pro').on('click',function(e){
+        e.preventDefault();
+        
+        $.ajax({
+            url: 'productslist' ,
+            type: 'GET',
+            data: null,
+            success: function (data) {
+                var rows = tableSelec2
+                    .rows()
+                    .remove()
+                    .draw();
+                if(data.status == 'ok')
+                {   
+                    let productosResponse = data.productos;
+                    $.each(productosResponse,function( key, value ){
+                        tableSelec2.row.add([
+                            value.IDPRODUCTO,
+                            value.CODIGOPRI,
+                            value.NOMBRE
+                        ]).draw( false );
+                    }) 
+                    $('#modal_tabla_productos').modal('show');
+                }else{
+                    swal({
+                        position: 'top-end',
+                        type: 'error',                          
+                        title: 'Error al consultal Productos',
+                        text:data.message,
+                        showConfirmButton: false,
+                        timer: 3200
+                    }) 
+                }
+            },
+            cache: false,
+            contentType: false,
+            processData: false,                
+        });
+    });
+
+    $('#tabla_productos_seleccion tbody').on( 'click', 'a', function () {
+        
+        let Cantidad = '<td><input type="number" class="cantidad_d"  value=""></td>';
+        let Precio = '<td><input type="decimal" class="precio_d"  value=""></td>';
+        let SubTotal = '<td><input type="decimal" class="subtotal_d" value=""></td>';
+        let Descuento = '<td><input type="decimal" class="descuento_d"  value=""></td>';
+        let IVA = '<td><input type="decimal" class="iva_d"  value=""></td>';
+        let Neto = '<td><input type="decimal" class="neto_d"  value=""></td>';
+
+        var data = tableSelec2.row( $(this).parents('tr') ).data();
+        $('#tbody_produtos_ncr').append('<tr><td ><input type="text" class="codigo_d" data-id="'+data[0]+'" disabled="true" value="'+data[1]+'"></input></td>'+Cantidad+Precio+SubTotal+Descuento+IVA+Neto+'</tr>');
+    } );
 
     $('.boton-seleccionar').on('click',function(e){
         e.preventDefault();
