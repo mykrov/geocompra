@@ -55,6 +55,11 @@
 <script>
     $('#table-user').DataTable({
         "scrollX": true,
+        "dom": 'Bfrtip',
+        "buttons": [
+            'excel',
+            'pdfHtml5'
+        ],
         "language": {
             "lengthMenu": "Mostrando _MENU_ registros por pagina",
             "zeroRecords": "Nada que mostrar",
@@ -88,6 +93,8 @@
             processData: false,                
         });        
     });
+
+    $('.buttons-html5').addClass('btn btn-primary');
 
     $('.btn_eliminar').on('click',function(){
         

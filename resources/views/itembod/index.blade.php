@@ -29,7 +29,11 @@
 </table>
 <script>
     $('#table-productos').DataTable({
-        
+        "dom": 'Bfrtip',
+        "buttons": [
+            'excel',
+            'pdfHtml5'
+        ],
         "language": {
             "lengthMenu": "Mostrando _MENU_ registros por pagina",
             "zeroRecords": "Nada que mostrar",
@@ -46,6 +50,8 @@
         }
     });
 
+
+    $('.buttons-html5').addClass('btn btn-primary');
     $('.btn_editar').on('click',function(){
         
         let idProducto = 0;
