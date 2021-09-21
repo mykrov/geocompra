@@ -11,10 +11,22 @@ class PermisosController extends Controller
 {
     public function index(){
 
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $dataUsuario = $session2['usuario'];
+        $idEmpresa = $empresadata['IDEMPRESA'];
+
         $menu = DB::table('GEOMENU')->get();
         $opcion = DB::table('GEOOPCION')->get();
         $accesos = DB::table('GEOACCESOS')->get();
-        $usuarios = DB::table('GEOUSUARIO')->get(); 
+        
+        $usuarios = DB::table('GEOUSUARIO')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get(); 
+
+        if(Session::get('rol') == 'PRO'){
+            $usuarios = DB::table('GEOUSUARIO')->get(); 
+        }
 
         return view('permisos.index',[
             'menus'=>$menu,
@@ -53,11 +65,23 @@ class PermisosController extends Controller
     }
 
     public function BuscarPermisos($iduser){
+
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $dataUsuario = $session2['usuario'];
+        $idEmpresa = $empresadata['IDEMPRESA'];
         
         $menu = DB::table('GEOMENU')->get();
         $opcion = DB::table('GEOOPCION')->get();
         $accesos = DB::table('GEOACCESOS')->get();
-        $usuarios = DB::table('GEOUSUARIO')->get(); 
+        
+        $usuarios = DB::table('GEOUSUARIO')
+        ->where('IDEMPRESA',$idEmpresa)
+        ->get(); 
+
+        if(Session::get('rol') == 'PRO'){
+            $usuarios = DB::table('GEOUSUARIO')->get(); 
+        } 
 
         return view('permisos.index',[
             'menus'=>$menu,

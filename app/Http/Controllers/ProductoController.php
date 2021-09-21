@@ -77,8 +77,11 @@ class ProductoController extends Controller
         $empresadata = $session2['empresa']; 
         $idEmpresa = $empresadata['IDEMPRESA'];
 
+        Log::info($r->body);
+
         if(Session::get('rol')== 'PRO'){
             $idEmpresa = $r['idempresa'];
+            $empresaApro = DB::table('GEOEMPRESA')->where('IDEMPRESA',$r['idempresa'])->first();
         }
             
         try {    
@@ -92,16 +95,16 @@ class ProductoController extends Controller
                 'estado'=>'required',
                 'proveedor'=>'required',
                 'idcategoria'=>'required',
-                'idmarca'=>'required'
+                'idmarca'=>'required',
+                'imagen'=>'required',
+                'stock'=>'required'
             ]);
 
         } catch (\Throwable $th) {
             return response()->json([
                 "status"=>"error",
                 "success" => false,
-                "message" => "Debe llenar todos los campos del Formulario.",
-                "logo" =>0,
-                "firma" =>0
+                "message" => "Debe llenar todos los campos del Formulario."
             ]);            
         } 
         
@@ -121,13 +124,21 @@ class ProductoController extends Controller
             $pro->COSTO= $r['costo'];
             $pro->IDPROVEEDOR= $r['proveedor'];
             $pro->IDEMPRESA =$idEmpresa;
-
-            
             
             try {
                 DB::beginTransaction();
+                  
+                $destinationPath='public/documents/'.trim($empresaApro->RUC).'/IMAGENES';
+                $file_extension = $r->imagen->getClientOriginalExtension();
+                $fileName = $pro->CODIGOPRI.'_'.trim($idEmpresa).'.'.$file_extension; 
+                $directorioNode = trim('C:\laragon\www\geocompra\storage\app\public\documents\ ').trim($empresaApro->RUC).trim('\IMAGENES\ '). $fileName;                 
+                              
+                $path = $r->file('imagen')->storeAs($destinationPath,$fileName);
+                Log::info($path);
+
+                $pro->IMAGEN = $directorioNode;
                 $pro->save();
-                $this->AddOnBod($idEmpresa,$pro->IDPRODUCTO,0);
+                $this->AddOnBod($idEmpresa,$pro->IDPRODUCTO,$r['stock']);
                 DB::commit();
     
                 return response()->json([
@@ -138,6 +149,7 @@ class ProductoController extends Controller
                     "firma" =>0
                 ]); 
             } catch (\Throwable $th) {
+                Log::error($th->getMessage());
                 return response()->json([
                     "status"=>"error",
                     "success" => false,
@@ -285,7 +297,7 @@ class ProductoController extends Controller
         ->limit(1)
         ->get();
 
-        Log::info(['Bodega para item Nuevo'=>$bodega]);
+        //Log::info(['Bodega para item Nuevo'=>$bodega]);
 
         try {
             $proBod = new GEOITEMBOD();

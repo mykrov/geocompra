@@ -84,7 +84,7 @@
 </div>
 
 <div class="form-group col-md-12 mt-3">
-    <button id="save_btn" type="submit" class="btn btn-primary mb-2">Guardar</button>
+    <button id="save_btn_ncr" type="submit" class="btn btn-primary mb-2">Guardar</button>
 </div> 
 
 <div class="modal fade" id="modal_tabla_facturas" tabindex="-1" role="dialog" aria-labelledby="verticalCenterTitle" aria-hidden="true">
@@ -250,11 +250,11 @@
 
     $('#tabla_productos_seleccion tbody').on( 'click', 'a', function () {
         
-        let Cantidad = '<td><input type="number" class="cantidad_d"  value=""></td>';
-        let Precio = '<td><input type="decimal" class="precio_d"  value=""></td>';
-        let SubTotal = '<td><input type="decimal" class="subtotal_d" value=""></td>';
-        let Descuento = '<td><input type="decimal" class="descuento_d"  value=""></td>';
-        let IVA = '<td><input type="decimal" class="iva_d"  value=""></td>';
+        let Cantidad = '<td><input type="number" class="cantidad_d"  value="1"></td>';
+        let Precio = '<td><input type="decimal" class="precio_d"  value="0"></td>';
+        let SubTotal = '<td><input type="decimal" class="subtotal_d" value="0"></td>';
+        let Descuento = '<td><input type="decimal" class="descuento_d"  value="0"></td>';
+        let IVA = '<td><input type="decimal" class="iva_d"  value="0"></td>';
         let Neto = '<td><input type="decimal" class="neto_d"  value=""></td>';
 
         var data = tableSelec2.row( $(this).parents('tr') ).data();
@@ -310,44 +310,165 @@
         $('#clientenombre').val(data[3]);   
     } );
 
-    $("form#ncr_form").submit(function(e) {
+    // $("form#ncr_form").submit(function(e) {
             
-            e.preventDefault();                
-            const formData = new FormData(this); 
-            console.log(formData);
+    //     e.preventDefault();                
+    //     const formData = new FormData(this); 
+    //     console.log(formData);
             
 
-            $.ajax({
-                url: '{{ route('guardaformapago') }}' ,
-                type: 'POST',
-                data: formData,
-                success: function (data) {
-                    console.log(data);
-                    if(data.status == 'ok')
-                    {                       
-                        swal({
-                            position: 'top-end',
-                            type: 'success',
-                            title: 'Nota de Credito Guardada.',
-                            showConfirmButton: false,
-                            timer: 1200
-                        })                      
+    //     $.ajax({
+    //         url: '{{ route('guardaformapago') }}' ,
+    //         type: 'POST',
+    //         data: formData,
+    //         success: function (data) {
+    //             console.log(data);
+    //             if(data.status == 'ok')
+    //             {                       
+    //                 swal({
+    //                     position: 'top-end',
+    //                     type: 'success',
+    //                     title: 'Nota de Credito Guardada.',
+    //                     showConfirmButton: false,
+    //                     timer: 1200
+    //                 })                      
                         
-                    }else{
-                        console.log(data);
-                        swal({
-                            position: 'top-end',
-                            type: 'error',                          
-                            title: 'Error al guardar Nota de Credito',
-                            text:data.message,
-                            showConfirmButton: false,
-                            timer: 3200
-                        }) 
-                    }
-                },
-                cache: false,
-                contentType: false,
-                processData: false,                
-            });
+    //             }else{
+    //                 console.log(data);
+    //                 swal({
+    //                     position: 'top-end',
+    //                     type: 'error',                          
+    //                     title: 'Error al guardar Nota de Credito',
+    //                     text:data.message,
+    //                     showConfirmButton: false,
+    //                     timer: 3200
+    //                 }) 
+    //             }
+    //         },
+    //         cache: false,
+    //         contentType: false,
+    //         processData: false,                
+    //     });
+    // });
+    
+    $('#save_btn_ncr').on('click',function(e){
+        
+        e.preventDefault();       
+        let subtotalncr = $('#subtotalncr').val();
+        let descuentoncr = $('#descuentoncr').val();
+        let ivafac = $('#ivafac').val();
+        let netofac = $('#netofac').val();
+        let facsecuencial = $('#facsecuencial').val();
+        let idbodega = $('#idbodega').val();
+        let idmotivo = $('#idmotivo').val();
+
+
+        if(subtotalncr == '' || descuentoncr == '' || netofac == '' ){
+            swal({
+                position: 'top-end',
+                type: 'error',                          
+                title: 'Error en datos de la compra',
+                text:'Debe indicar los datos del documento.',
+                showConfirmButton: false,
+                timer: 3200
+            }) 
+            return 0;    
+        }
+
+        let cabecera = {            
+            'subtotalncr':subtotalncr,
+            'descuentoncr':descuentoncr,
+            'ivafac':ivafac,
+            'netofac':netofac,
+            'facsecuencial':facsecuencial,
+            'idbodega':idbodega,
+            'idmotivo':idmotivo
+        };
+
+        let detalles = new Array();
+        const tableDetNCR = document.getElementById("tbody_produtos_ncr");  
+        for (const row of tableDetNCR.rows) {            
+           // let idproducto  = $(row).find('td').find('.nombre_d').data('id');
+            let idproducto = $(row).find('td').find('.idproducto').data('id');
+            let cantidad = $(row).find('td').find('.cantidad_d').val();
+            let precio = $(row).find('td').find('.precio_d').val();
+            let subtotal = $(row).find('td').find('.subtotal_d').val();
+            let descuento = $(row).find('td').find('.descuento_d').val();
+            let iva = $(row).find('td').find('.iva_d').val();
+            let neto = $(row).find('td').find('.neto_d').val();
+            let poriva = $(row).find('td').find('iva_d').val();
+            //alert(nombre +' el id es '+ idproducto);
+
+            if(subtotal == 0 || precio == 0 || neto == 0){
+                swal({
+                    position: 'top-end',
+                    type: 'error',                          
+                    title: 'Error en datos de Productos',
+                    text:'Debe indicar Subtotal, Costo y Neto.',
+                    showConfirmButton: false,
+                    timer: 3200
+                }) 
+                return 0;
+            }
+            
+            detalles.push({
+                'idproducto':idproducto,
+                'cantidad':cantidad,
+                'precio':precio,
+                'subtotal':subtotal,
+                'descuento':descuento,
+                'iva':iva,
+                'neto':neto,
+                'poriva':poriva
+            });      
+        }
+
+        dataCompra = new Array();
+        dataCompra.push({'cabecera':cabecera,'detalles':detalles})
+        console.log(dataCompra)
+        postData("{{ route('ncrguardar') }}", dataCompra)
+        .then(data => {      
+            if(data.status == 'ok'){
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Compra Guardada.',
+                    showConfirmButton: false,
+                    timer: 1200
+                })                      
+                
+            }else{
+                console.log(data);
+                swal({
+                    position: 'top-end',
+                    type: 'error',                          
+                    title: 'Error al guardar Compras',
+                    text:data.message,
+                    showConfirmButton: false,
+                    timer: 3200
+                }) 
+            }                  
+            console.log({"respuesta":data}); // JSON data parsed by `data.json()` call
         });
+    });
+
+    
+    async function postData(url = '', data = {}) {
+        // Opciones por defecto estan marcadas con un *
+        const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        });
+        return response.json(); // parses JSON response into native JavaScript objects
+    }
 </script>

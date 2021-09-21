@@ -65,18 +65,23 @@ class NotaCreditoController extends Controller
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $usuariodata=$session2['usuario'];
-        $idEmpresa = $empresadata['IDEMPRESA'];        
+        $idEmpresa = $empresadata['IDEMPRESA'];  
+        
+        $cabecera = $r[0]['cabecera'];
+        $detalles = $r[0]['detalles'];
+
         
         try {    
 
-            $validator = $r->validate([
-                'facnumero' => 'required',
-                'clientenombre' =>'required',
-                'subtotalncr'=>'required',
-                'descuentoncr'=> 'required',
-                'idbodega'=>'required',
-                'idmotivo'=>'required'
-            ]);
+            if(count($detalles) == 0){
+                return response()->json([
+                    "status"=>"error",
+                    "success" => false,
+                    "message" => "No hay detalles en la Nota de Crédito.",
+                    "logo" =>0,
+                    "firma" =>0
+                ]);
+            }
 
         } catch (\Throwable $th) {
             return response()->json([
@@ -88,7 +93,7 @@ class NotaCreditoController extends Controller
             ]);            
         } 
         
-        $cont = GEONCRCAB::where('NOAUTORIZACION',trim($r['facnumero']))
+        $cont = GEONCRCAB::where('SECFACTURA',trim($r['facsecuencial']))
         ->where('IDMOTIVO',$r['idmotivo'])
         ->count();
 
@@ -96,44 +101,51 @@ class NotaCreditoController extends Controller
             
             $date = Carbon::now();
             $ncr = new GEONCRCAB(); 
-            $ncr->SUBTOTALBNCR= $r["subtotalncr"];
-            $ncr->DESCUENTONCR= $r["descuentoncr"];
+            $ncr->SUBTOTALBNCR = $r["subtotalncr"];
+            $ncr->DESCUENTONCR = $r["descuentoncr"];
 
-            $ncr->IVAFAC= $r["ivafac"];
-            $ncr->NETOFAC= $r["netofac"];
-            $ncr->FECHAEMI= $date->format('d-m-Y');
-            $ncr->SECFACTURA= $r["facsecuencial"];
-            $ncr->CLAVEACCESO= "";
-            $ncr->NOAUTORIZACION= "";
-            $ncr->ARCHIVOXML= "";
-            $ncr->FIRMAXML= "";
+            $ncr->IVAFAC = $r["ivafac"];
+            $ncr->NETOFAC = $r["netofac"];
+            $ncr->FECHAEMI = $date->format('d-m-Y');
+            $ncr->SECFACTURA = $r["facsecuencial"];
+            $ncr->CLAVEACCESO = "";
+            $ncr->NOAUTORIZACION = "";
+            $ncr->ARCHIVOXML = "";
+            $ncr->FIRMAXML = "";
             $ncr->ARCHIVOAUTORIZADO= "";
             $ncr->ARCHIVOPDF= "";
-            $ncr->ARCHIVOERROR= "";
-            $ncr->CODERROR= "";
-            $ncr->FECHAPROCESO= $r[""];
-            $ncr->HORAPROCESO= $r[""];
-            $ncr->ESTADOPROCESO= 'N';
-            $ncr->IDUSUARIO= $usuariodata['IDUSUARIO'] ;
-            $ncr->MOTIVO= $r["idmotivo"];
-            $ncr->IDEMPRESA=$idEmpresa;
-            $ncr->IDBODEGA= $r["idbodega"];
+            $ncr->ARCHIVOERROR = "";
+            $ncr->CODERROR = "";
+            $ncr->FECHAPROCESO = $r[""];
+            $ncr->HORAPROCESO = $r[""];
+            $ncr->ESTADOPROCESO = 'N';
+            $ncr->IDUSUARIO = $usuariodata['IDUSUARIO'] ;
+            $ncr->MOTIVO = $r["idmotivo"];
+            $ncr->IDEMPRESA = $idEmpresa;
+            $ncr->IDBODEGA = $r["idbodega"];
 
             try {
                 DB::beginTransaction();
                 $ncr->save();
-
+                $linea =  1;
                 foreach ($detalles as $key => $value) {
-                    $deta = new GEOCDETINGRESO();
-                    $deta->IDCABINGRESO = $cab->IDCABINGRESO;
-                    $deta->IDPRODUCTO = $value['idproducto'];
-                    $deta->CANTIDAD = $value['cantidad'];
-                    $deta->COSTO = $value['precio'];
-                    $deta->SUBTOTAL = round(floatval($value['cantidad']) * floatval($value['precio']),2) ;
-                    $deta->IVA = floatval($deta->IVA);
-                    $deta->DESCUENTO = 0;
-                    $deta->NETO = round($deta->SUBTOTAL + floatval($deta->IVA),2);
+                    $deta = new GEONCRDET();
+                   
+                    $deta->IDEMPRESA= $idEmpresa;
+                    $deta->IDSUCURSAL= 1;
+                    $deta->LINEA= $linea;
+                    $deta->IDITEM= $value['idproducto'];
+                    $deta->CANTIDAD= $value['cantidad'];
+                    $deta->PRECIO= $value['precio'];
+                    $deta->SUBTOTAL= $value['subtotal'];
+                    $deta->DESCUENTO= $value['descuento'];
+                    $deta->IVA= $value['iva'];
+                    $deta->NETO= $value['neto'];
+                    $deta->PORIVA= $value['poriva'];
+                    $deta->GRABAIVA= 'S';
+                    $deta->SECUENCIALNCR = $ncr->SECUENCIALNCR;
                     $deta->save();
+                    $linea++;
                 }
                
                 DB::commit();
@@ -166,7 +178,7 @@ class NotaCreditoController extends Controller
         }
     }
 
-    public function UpdateProducto(Request $r){
+    public function UpdateNcr(Request $r){
         
         try {    
             $validator = $r->validate([
@@ -241,7 +253,7 @@ class NotaCreditoController extends Controller
         }
     }
 
-    public function DeleteProducto(Request $r){
+    public function DeleteNcr(Request $r){
         
         $ID = $r['idProducto'];
         $pro = GEOPRODUCTO::where('IDPRODUCTO',$ID)->first();

@@ -5,7 +5,6 @@
                                     
     <input name="id" type="hidden" class="form-control" id="id">
     <input name="_token" type="hidden" class="form-control" id="_token"   value="{{ csrf_token() }}">
-        
     <div class="form-group col-md-2">
         <label for="codigopri">Código Principal</label>
         <input name="codigopri" type="text" class="form-control" id="codigopri"  maxlength="6"   aria-describedby="emailHelp" placeholder="" value="">
@@ -26,11 +25,16 @@
         <input name="precio" type="decimal" class="form-control" id="precio"  placeholder="" value="">
         <small  class="form-text text-muted">precio del item</small>
     </div>   
-    <div class="form-group col-md-2">
+    <div class="form-group col-md-1">
         <label for="costo">Costo</label>
         <input name="costo" type="decimal" class="form-control" id="costo"  placeholder="" value="">
         <small  class="form-text text-muted">costo del item.</small>
     </div> 
+    <div class="form-group col-md-1">
+        <label for="stock">Stock</label>
+        <input name="stock" type="decimal" class="form-control" id="stock"  placeholder="" value="">
+        <small  class="form-text text-muted">Stock</small>
+    </div>
     <div class="form-group mb-0 col-md-2" data-select6-id="6">
         <label>Graba IVA</label>
         <select class="js-basic-single form-control" name="grabaiva" data-select6-id="1" tabindex="-1" aria-hidden="true">
@@ -48,7 +52,7 @@
     <div class="form-group col-md-4">
         <label for="imagen">Imagen</label>
         <input name="imagen" type="file" class="form-control" id="imagen" aria-describedby="emailHelp" accept=".jpg,.jpeg" placeholder="" ">
-        <small id="imagen" class="form-file "></small>
+        <small  class="form-file "></small>
     </div>
     <div class="form-group mb-0 col-md-4" data-select6-id="6">
         <label>Proveedor</label>
@@ -96,19 +100,6 @@
             const formData = new FormData(this); 
             console.log(formData);
             
-            // if (!hasExtension('firmaelectronica', ['.p12'])) {
-            //     swal({
-            //         position: 'top-end',
-            //         type: 'error',                          
-            //         title: 'Firma con extensión invalida.',
-            //         text:'La firma debe ser con extensión .p12',
-            //         showConfirmButton: false,
-            //         timer: 3200
-            //     }) 
-
-            //     return 0;
-            // } 
-
             jQuery.each(jQuery('#producto_form')[0].files, function(i, file) {
                 formData.append('file-'+i, file);
             });

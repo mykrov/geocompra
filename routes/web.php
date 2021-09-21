@@ -129,6 +129,7 @@ Route::post('guardaformapago','FormaPagoController@GuardaFormaPago')->name('guar
 Route::get('ncr','NotaCreditoController@Index')->name('ncrindex');
 Route::get('crearncr','NotaCreditoController@CrearNotaCredito')->name('ncrcrear');
 Route::get('facturalist','NotaCreditoController@getFacturas')->name('getfacturas');
+Route::post('guardancr','NotaCreditoController@GuardaNcr')->name('ncrguardar');
 
 
 Route::post('authlogin','AuthController@Login')->name('authlogin');

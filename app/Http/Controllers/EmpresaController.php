@@ -195,12 +195,18 @@ class EmpresaController extends Controller
             $empre->WSAUTOPRODUCCION = "https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl";
             $empre->CONTRIBUYENTEESPECIAL = 0;
 
-            $empre->RUTAARCHIVOXMLFAC = trim($dirFirm).trim($r['ruc']).trim($backsal).'solo';
-            $empre->RUTAARCHIVOSPDF = trim($dirFirm).trim($r['ruc']).trim($backsal).'pdf';
-            $empre->RUTAXMLFIRMADO = trim($dirFirm).trim($r['ruc']).trim($backsal).'firmado';
-            $empre->RUTAXMLAUTORIZADO = trim($dirFirm).trim($r['ruc']).trim($backsal).'autorizado';
-            $empre->RUTAXMLERROR = trim($dirFirm).trim($r['ruc']).trim($backsal).'error';
+            // $empre->RUTAARCHIVOXMLFAC = trim($dirFirm).trim($r['ruc']).trim($backsal).'solo';
+            // $empre->RUTAARCHIVOSPDF = trim($dirFirm).trim($r['ruc']).trim($backsal).'pdf';
+            // $empre->RUTAXMLFIRMADO = trim($dirFirm).trim($r['ruc']).trim($backsal).'firmado';
+            // $empre->RUTAXMLAUTORIZADO = trim($dirFirm).trim($r['ruc']).trim($backsal).'autorizado';
+            // $empre->RUTAXMLERROR = trim($dirFirm).trim($r['ruc']).trim($backsal).'error';
 
+            $empre->RUTAARCHIVOXMLFAC = '';
+            $empre->RUTAARCHIVOSPDF = '';
+            $empre->RUTAXMLFIRMADO = '';
+            $empre->RUTAXMLAUTORIZADO = '';
+            $empre->RUTAXMLERROR ='';
+            
             if($r['agente'] == 'on'){
                 $empre->AGENTERETENCION = 1;
             }
