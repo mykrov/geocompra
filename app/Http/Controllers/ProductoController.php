@@ -132,7 +132,7 @@ class ProductoController extends Controller
                 $destinationPath='public/documents/'.trim($empresaApro->RUC).'/IMAGENES';
                 $file_extension = $r->imagen->getClientOriginalExtension();
                 $fileName = $pro->CODIGOPRI.'_'.trim($idEmpresa).'.'.$file_extension; 
-                $directorioNode = trim('C:\laragon\www\geocompra\storage\app\public\documents\ ').trim($empresaApro->RUC).trim('\IMAGENES\ '). $fileName;                 
+                $directorioNode = trim($empresaApro->RUC).trim('\IMAGENES\ '). $fileName;                 
                               
                 $path = $r->file('imagen')->storeAs($destinationPath,$fileName);
                 Log::info($path);
