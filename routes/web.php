@@ -31,6 +31,7 @@ Route::post('obtenerfacturas','DocumentosController@ConsultarFacturas')->name('o
 Route::get('permisosindex','PermisosController@index')->name('permisosindex');
 Route::post('updatepermiso','PermisosController@EditarPermiso')->name('updatepermiso');
 Route::get('buscarpermisos/{iduser}','PermisosController@BuscarPermisos');
+Route::get('crearpermisos/{user}/{tipo}','PermisosController@AddPermisoUser');
 
 
 //Productos

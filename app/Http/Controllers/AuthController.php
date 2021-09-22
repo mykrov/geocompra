@@ -113,8 +113,8 @@ class AuthController extends Controller
         $user->TELEFONO = "0961213859";
         $user->CORREO = "salvatorex89@gmail.com";
         $user->USUARIO = "mykrov";
-        $user->CLAVE = Hash::make('1982537');
-        $user->ROL = "ADM";
+        $user->CLAVE = Hash::make('123123');
+        $user->ROL = "PRO";
         $user->IDEMPRESA = "3";
         $user->IDBODEGA = "1";
         try {

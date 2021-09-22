@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\GEOACCESOS;
+use App\GEOOPCION;
 
 class PermisosController extends Controller
 {
@@ -96,30 +97,26 @@ class PermisosController extends Controller
     public function AddPermisoUser($iduser,$tipo){
         
         $opciones =[];
-        
-        if($tipo == 'PRO'){
-            $opciones = [2,3,5,6,7,8,9,11,12,13,15,17,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37];
-        }else{
-            $opciones = [6,7,11,15,21,23,25,28,31,34,39,38,40];
-        }
-        
-        $opcionNOMenu = [9,10,3,13,27,30,33,17,36];
-          
-        foreach ($opciones as $key => $value) {
-           
+
+        $geoopciones = GEOOPCION::all();
+
+        foreach ($geoopciones as $value) {
+            
             $acceso = GEOACCESOS::where('IDUSUARIO',$iduser)
-            ->where('IDOPCION',$value)
+            ->where('IDOPCION',$value->IDOPCION)
             ->count(); 
 
             if($acceso == 0){
-                try {
+                try {                    
                     $newAcceso = new GEOACCESOS();
                     $newAcceso->IDUSUARIO = $iduser;
-                    $newAcceso->IDOPCION = $value;
-                    $newAcceso->ESMENU = 'S';
-
-                    if(in_array($value,$opcionNOMenu)){
+                    $newAcceso->IDOPCION = $value->IDOPCION;
+                    
+                    if($value->OCULTO == 'S'){
+                        Log::info('opcion oculta ' .$value->IDOPCION );
                         $newAcceso->ESMENU = 'N';
+                    }else{
+                        $newAcceso->ESMENU = 'S';
                     }
 
                     $newAcceso->ESTADO = 'S';
@@ -127,7 +124,55 @@ class PermisosController extends Controller
                 } catch (\Throwable $th) {
                     Log::error($th->getMessage());
                 }                
-           }
+            }else{
+                Log::info('entra en el else');
+                $acceso = GEOACCESOS::where('IDUSUARIO',$iduser)
+                ->where('IDOPCION',$value->IDOPCION)
+                ->first();                
+
+                if($value->OCULTO == 'S'){
+                    Log::info('Modificación de opcion oculta ' .$value->IDOPCION );
+                    $acceso->ESMENU = 'N';
+                    $acceso->save();
+                }else{
+                    $acceso->ESMENU = 'S';
+                    $acceso->save();
+                }
+                
+            }
         }
+        
+        // if($tipo == 'PRO'){
+        //     $opciones = [2,3,5,6,7,8,9,11,12,13,15,17,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40];
+        // }else{
+        //     $opciones = [6,7,11,15,21,23,25,28,31,34,39,38,40];
+        // }
+        
+        // $opcionNOMenu = [9,10,3,13,27,30,33,17,36];
+          
+        // foreach ($opciones as $key => $value) {
+           
+        //     $acceso = GEOACCESOS::where('IDUSUARIO',$iduser)
+        //     ->where('IDOPCION',$value)
+        //     ->count(); 
+
+        //     if($acceso == 0){
+        //         try {
+        //             $newAcceso = new GEOACCESOS();
+        //             $newAcceso->IDUSUARIO = $iduser;
+        //             $newAcceso->IDOPCION = $value;
+        //             $newAcceso->ESMENU = 'S';
+
+        //             if(in_array($value,$opcionNOMenu)){
+        //                 $newAcceso->ESMENU = 'N';
+        //             }
+
+        //             $newAcceso->ESTADO = 'S';
+        //             $newAcceso->save();
+        //         } catch (\Throwable $th) {
+        //             Log::error($th->getMessage());
+        //         }                
+        //    }
+        // }
     }
 }

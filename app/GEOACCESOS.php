@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $IDUSUARIO
  * @property string $ESTADO
  * @property string $ESMENU
- * @property GEOUSUARIO $gEOUSUARIO
  * @property GEOOPCION $gEOOPCION
+ * @property GEOUSUARIO $gEOUSUARIO
  */
 class GEOACCESOS extends Model
 {
@@ -38,16 +38,16 @@ class GEOACCESOS extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function gEOUSUARIO()
+    public function gEOOPCION()
     {
-        return $this->belongsTo('App\GEOUSUARIO', 'IDUSUARIO', 'IDUSUARIO');
+        return $this->belongsTo('App\GEOOPCION', 'IDOPCION', 'IDOPCION');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function gEOOPCION()
+    public function gEOUSUARIO()
     {
-        return $this->belongsTo('App\GEOOPCION', 'IDOPCION', 'IDOPCION');
+        return $this->belongsTo('App\GEOUSUARIO', 'IDUSUARIO', 'IDUSUARIO');
     }
 }
