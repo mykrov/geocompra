@@ -78,6 +78,7 @@ class ProductoController extends Controller
         $idEmpresa = $empresadata['IDEMPRESA'];
 
         Log::info($r->body);
+        $empresaApro = $idEmpresa;
 
         if(Session::get('rol')== 'PRO'){
             $idEmpresa = $r['idempresa'];
