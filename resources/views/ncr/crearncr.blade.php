@@ -42,7 +42,7 @@
         </div>
         <div class="form-group mb-0 col-md-3" data-select6-id="6">
             <label>Motivo</label>
-            <select class="js-basic-single form-control" name="idmotivo" data-select6-id="1" tabindex="-1" aria-hidden="true">
+            <select class="js-basic-single form-control" id="idmotivo" name="idmotivo" data-select6-id="1" tabindex="-1" aria-hidden="true">
                 @foreach ($motivos as $mot)
                     <option value="{{ $mot->IDMOTIVO }}" data-select6-id="1">{{ $mot->NOMBRE }}</option>
                 @endforeach                             
@@ -50,7 +50,7 @@
         </div>
         <div class="form-group mb-0 col-md-3" data-select6-id="6">
             <label>Bodega</label>
-            <select class="js-basic-single form-control" name="idbodega" data-select6-id="1" tabindex="-1" aria-hidden="true">
+            <select class="js-basic-single form-control" id="idbodega" name="idbodega" data-select6-id="1" tabindex="-1" aria-hidden="true">
                 @foreach ($bodegas as $bod)
                     <option value="{{ $bod->IDBODEGA }}" data-select6-id="1">{{ $bod->NOMBRECOMERCIAL }}</option>
                 @endforeach                             

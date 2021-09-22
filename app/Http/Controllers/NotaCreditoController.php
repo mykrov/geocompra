@@ -94,7 +94,7 @@ class NotaCreditoController extends Controller
         } 
         
         $cont = GEONCRCAB::where('SECFACTURA',trim($r['facsecuencial']))
-        ->where('IDMOTIVO',$r['idmotivo'])
+        ->where('MOTIVO',$r['idmotivo'])
         ->count();
 
         if($cont == 0){
@@ -282,10 +282,14 @@ class NotaCreditoController extends Controller
 
     public function getFacturas(){
 
+        
+
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $idEmpresa = $empresadata['IDEMPRESA'];
-
+        
+        Log::info('Consultando facturas en AJAX empresa '.$idEmpresa);
+        
         $facturas = DB::table('GEOCABFACTURA')
         ->join('GEOCLIENTE','GEOCABFACTURA.CLIENTE','GEOCLIENTE.IDCLIENTE')
         ->where('IDEMPRESA',$idEmpresa)
