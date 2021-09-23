@@ -98,6 +98,8 @@ class NotaCreditoController extends Controller
         ->count();
 
         if($cont == 0){
+
+            $bodega = GEOBODEGA::where('IDBODEGA',$r["idbodega"])->first();
             
             $date = Carbon::now();
             $ncr = new GEONCRCAB(); 

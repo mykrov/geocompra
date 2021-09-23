@@ -68,8 +68,7 @@ class ProductoCompuesto extends Controller
                 'codigopri' => 'required|string|min:3',
                 'codigosec' =>'required|string|min:3',
                 'nombre'=>'required|string|min:3',
-                'precio'=> 'required',
-                'costo'=>'required',
+                'precio'=> 'required',                
                 'grabaiva'=>'required',                
                 'estado'=>'required',
                 'proveedor'=>'required',
@@ -100,7 +99,7 @@ class ProductoCompuesto extends Controller
             $pro->ESTADO= $r['estado'];
             $pro->IDCATEGORIA= $r['idcategoria'];
             $pro->IDMARCA= $r['idmarca'];
-            $pro->COSTO= $r['costo'];
+            $pro->COSTO= $r['precio'];
             $pro->IDPROVEEDOR= $r['proveedor'];
             $pro->IDEMPRESA =$idEmpresa;
             

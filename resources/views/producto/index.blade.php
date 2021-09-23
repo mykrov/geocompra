@@ -9,6 +9,8 @@
         <td>Código</td>
         <td>Nombre</td>
         <td>Precio</td>
+        <td>Stock</td>
+        <td>Bodega</td>
         <td>IVA</td>
         <td>Editar</td>
         <td>Eliminar</td>
@@ -19,6 +21,8 @@
                 <td>{{ $pro->CODIGOPRI }}</td>
                 <td>{{ $pro->NOMBRE }}</td>
                 <td>{{ $pro->PRECIO }}</td>
+                <td>{{ $pro->STOCK }}</td>
+                <td>{{ $pro->NOMBRECOMERCIAL }}</td>
                 <td>{{ $pro->GRABAIVA }}</td>
                 <td><a href="javascript:void(0);" data-id="{{$pro->IDPRODUCTO}}" class="btn btn-icon btn-xs btn-info btn_editar"><i class="fa fa-edit"></i></a></td>
                 <td><a href="javascript:void(0);" data-id="{{$pro->IDPRODUCTO}}" class="btn btn-icon  btn-xs btn-danger btn_eliminar"><i class="fa fa-trash"></i></a></td>

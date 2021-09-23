@@ -8,19 +8,20 @@
     <div class="form-group col-md-2">
         <label for="codigopri">Código Principal</label>
         <input name="codigopri" type="text" class="form-control" id="codigopri"  maxlength="6"   aria-describedby="emailHelp" placeholder="" value="">
-        <small id="codigopri" class="form-text text-muted">Código primario del item.</small>
+        <small id="codigopri" class="form-text text-muted">Código primario, minimo 3 caracteres.</small>
     </div>
-    <div class="form-group col-md-2">
-        <label for="codigosec">Código Secundario</label>
-        <input name="codigosec" type="text" class="form-control" maxlength="6" id="codigosec" aria-describedby="emailHelp" placeholder="" value="">
-        <small id="codigosec" class="form-text text-muted">Código adicional.</small>
-    </div>
-    <div class="form-group col-md-4">
+    
+    <div class="form-group col-md-5">
         <label for="nombre">Nombre Producto</label>
         <input name="nombre" type="text" class="form-control" maxlength="40" id="nombre" aria-describedby="emailHelp" placeholder="" value="">
         <small id="nombre" class="form-text text-muted">Nombre descriptivo.</small>
     </div>
-    <div class="form-group col-md-2">
+    <div class="form-group col-md-5">
+        <label for="descripcion">Detalle</label>
+        <input name="descripcion" type="text" class="form-control" maxlength="240" id="descripcion" aria-describedby="emailHelp" placeholder="" value=" ">
+        <small  class="form-text text-muted">Detalle, observación.</small>
+    </div>
+    <div class="form-group col-md-1">
         <label for="precio">Precio</label>
         <input name="precio" type="decimal" class="form-control" id="precio"  placeholder="" value="">
         <small  class="form-text text-muted">precio del item</small>

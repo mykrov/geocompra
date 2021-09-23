@@ -18,11 +18,37 @@ class ProductoController extends Controller
         $empresadata = $session2['empresa']; 
         $dataUsuario = $session2['usuario'];
         $idEmpresa = $empresadata['IDEMPRESA'];
-        $rol = Session::get('rol');
-
+        
         $productos = DB::table('GEOPRODUCTO')
-        ->where('IDEMPRESA',$idEmpresa)
+        ->join('GEOITEMBOD','GEOITEMBOD.IDPRODUCTO','GEOPRODUCTO.IDPRODUCTO')
+        ->join('GEOBODEGA','GEOBODEGA.IDBODEGA','GEOITEMBOD.IDPRODUCTO')
+        ->where('GEOPRODUCTO.IDEMPRESA',$idEmpresa)
+        ->where('GEOPRODUCTO.ESTADO','A')
+        ->select(['GEOPRODUCTO.CODIGOPRI',
+            'GEOPRODUCTO.IDPRODUCTO',
+            'GEOPRODUCTO.NOMBRE',
+            'GEOPRODUCTO.GRABAIVA',
+            'GEOBODEGA.NOMBRECOMERCIAL',
+            'GEOITEMBOD.STOCK',
+            'GEOPRODUCTO.PRECIO'
+            ])
         ->get();
+
+        if(Session::get('rol') == 'PRO'){
+            $productos = DB::table('GEOPRODUCTO')
+            ->join('GEOITEMBOD','GEOITEMBOD.IDPRODUCTO','GEOPRODUCTO.IDPRODUCTO')
+            ->join('GEOBODEGA','GEOBODEGA.IDBODEGA','GEOITEMBOD.IDPRODUCTO')
+            ->where('GEOPRODUCTO.ESTADO','A')
+            ->select(['GEOPRODUCTO.CODIGOPRI',
+                'GEOPRODUCTO.IDPRODUCTO',
+                'GEOPRODUCTO.NOMBRE',
+                'GEOPRODUCTO.GRABAIVA',
+                'GEOBODEGA.NOMBRECOMERCIAL',
+                'GEOITEMBOD.STOCK',
+                'GEOPRODUCTO.PRECIO'
+                ])
+            ->get();
+        }
 
         return view('producto.index',['productos'=>$productos]);
     }
@@ -57,11 +83,16 @@ class ProductoController extends Controller
     }
 
     public function EditarProducto($id){
+
+        $session2 = Session::get('usuario');
+        $empresadata = $session2['empresa']; 
+        $dataUsuario = $session2['usuario'];
+        $idEmpresa = $empresadata['IDEMPRESA'];
         
-        $proveedores = DB::table('GEOPROVEEDOR')->where('IDEMPRESA',$idEmpresa)->get();
-        $categorias = DB::table('GEOCATEGORIA')->where('IDEMPRESA',$idEmpresa)->get();
-        $marcas =  DB::table('GEOMARCA')->where('IDEMPRESA',$idEmpresa)->get();
         $producto = GEOPRODUCTO::where('IDPRODUCTO',$id)->first();
+        $proveedores = DB::table('GEOPROVEEDOR')->where('IDEMPRESA',$producto->IDEMPRESA)->get();
+        $categorias = DB::table('GEOCATEGORIA')->where('IDEMPRESA',$producto->IDEMPRESA)->get();
+        $marcas =  DB::table('GEOMARCA')->where('IDEMPRESA',$producto->IDEMPRESA)->get();        
 
         return view('producto.editarproducto',[
             'proveedores'=>$proveedores,
@@ -88,7 +119,6 @@ class ProductoController extends Controller
         try {    
             $validator = $r->validate([
                 'codigopri' => 'required|string|min:3',
-                'codigosec' =>'required|string|min:3',
                 'nombre'=>'required|string|min:3',
                 'precio'=> 'required',
                 'costo'=>'required',
@@ -114,7 +144,7 @@ class ProductoController extends Controller
         if($cont == 0){
             $pro = new GEOPRODUCTO();        
             $pro->CODIGOPRI=$r['codigopri'];
-            $pro->CODIGOSEC= $r['codigosec'];
+            $pro->CODIGOSEC= $r['codigopri'];
             $pro->NOMBRE= $r['nombre'];
             $pro->PRECIO= $r['precio'];
             $pro->GRABAIVA= $r['grabaiva'];
@@ -125,6 +155,7 @@ class ProductoController extends Controller
             $pro->COSTO= $r['costo'];
             $pro->IDPROVEEDOR= $r['proveedor'];
             $pro->IDEMPRESA =$idEmpresa;
+            $pro->DESCRIPCION =$r['descripcion'];
             
             try {
                 DB::beginTransaction();
@@ -133,9 +164,20 @@ class ProductoController extends Controller
                 $file_extension = $r->imagen->getClientOriginalExtension();
                 $fileName = $pro->CODIGOPRI.'_'.trim($idEmpresa).'.'.$file_extension; 
                 $directorioNode = trim($empresaApro->RUC).trim('\IMAGENES\ '). $fileName;                 
-                              
-                $path = $r->file('imagen')->storeAs($destinationPath,$fileName);
-                Log::info($path);
+                 
+                try {
+                    $path = $r->file('imagen')->storeAs($destinationPath,$fileName);
+                    Log::info($path);
+                } catch (\Throwable $th) {
+                    Log::error($th->getMessage());
+                    return response()->json([
+                        "status"=>"error",
+                        "success" => false,
+                        "message" => "error guardando almacenando imagen",
+                        "logo" =>0,
+                        "firma" =>0
+                    ]); 
+                }                
 
                 $pro->IMAGEN = $directorioNode;
                 $pro->save();
@@ -175,7 +217,7 @@ class ProductoController extends Controller
         try {    
             $validator = $r->validate([
                 'codigopri' => 'required|string|min:3',
-                'codigosec' =>'required|string|min:3',
+                'descripcion' =>'required|string|min:1',
                 'nombre'=>'required|string|min:3',
                 'precio'=> 'required',
                 'costo'=>'required',
@@ -204,7 +246,7 @@ class ProductoController extends Controller
 
             $pro = GEOPRODUCTO::where('IDPRODUCTO',$r['idproducto'])->first();        
             $pro->CODIGOPRI=$r['codigopri'];
-            $pro->CODIGOSEC= $r['codigosec'];
+            $pro->CODIGOSEC= $r['codigopri'];
             $pro->NOMBRE= $r['nombre'];
             $pro->PRECIO= $r['precio'];
             $pro->GRABAIVA= $r['grabaiva'];
@@ -214,6 +256,7 @@ class ProductoController extends Controller
             $pro->IDMARCA= $r['idmarca'];
             $pro->COSTO= $r['costo'];
             $pro->IDPROVEEDOR= $r['proveedor'];
+            $pro->DESCRIPCION = $r['descripcion'];
             
             try {
                 $pro->save();

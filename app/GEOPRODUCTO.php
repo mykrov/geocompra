@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $IDMARCA
  * @property float $COSTO
  * @property int $IDPROVEEDOR
+ * @property string $DESCRIPCION
  * @property GEOPROVEEDOR $gEOPROVEEDOR
  * @property GEOCATEGORIUM $gEOCATEGORIum
  * @property GEOMARCA $gEOMARCA
@@ -44,7 +45,7 @@ class GEOPRODUCTO extends Model
     /**
      * @var array
      */
-    protected $fillable = ['CODIGOPRI', 'CODIGOSEC', 'NOMBRE', 'PRECIO', 'GRABAIVA', 'IMAGEN', 'ESTADO', 'IDCATEGORIA', 'IDMARCA', 'COSTO', 'IDPROVEEDOR'];
+    protected $fillable = ['CODIGOPRI', 'CODIGOSEC', 'NOMBRE', 'PRECIO', 'GRABAIVA', 'IMAGEN', 'ESTADO', 'IDCATEGORIA', 'IDMARCA', 'COSTO', 'IDPROVEEDOR','DESCRIPCION'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

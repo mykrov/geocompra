@@ -11,17 +11,18 @@
         <input name="codigopri" type="text" class="form-control" id="codigopri"  maxlength="6"   aria-describedby="emailHelp" placeholder="" value="{{ $producto->CODIGOPRI}}">
         <small id="codigopri" class="form-text text-muted">Código primario del item.</small>
     </div>
-    <div class="form-group col-md-2">
-        <label for="codigosec">Código Secundario</label>
-        <input name="codigosec" type="text" class="form-control" maxlength="6" id="codigosec" aria-describedby="emailHelp" placeholder="" value="{{ $producto->CODIGOSEC}}">
-        <small id="codigosec" class="form-text text-muted">Código adicional.</small>
-    </div>
-    <div class="form-group col-md-4">
+    
+    <div class="form-group col-md-5">
         <label for="nombre">Nombre Producto</label>
         <input name="nombre" type="text" class="form-control" maxlength="40" id="nombre" aria-describedby="emailHelp" placeholder="" value="{{ $producto->NOMBRE}}">
         <small id="nombre" class="form-text text-muted">Nombre descriptivo.</small>
     </div>
-    <div class="form-group col-md-2">
+    <div class="form-group col-md-5">
+        <label for="descripcion">Detalle</label>
+        <input name="descripcion" type="text" class="form-control" maxlength="240" id="descripcion" aria-describedby="emailHelp" placeholder="" value="{{ $producto->DESCRIPCION}}">
+        <small  class="form-text text-muted">Detalle, observación.</small>
+    </div>
+    <div class="form-group col-md-1">
         <label for="precio">Precio</label>
         <input name="precio" type="number" class="form-control" id="precio" aria-describedby="emailHelp" placeholder="" value="{{ $producto->PRECIO}}">
         <small id="precio" class="form-text text-muted">precio del item</small>
