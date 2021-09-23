@@ -76,8 +76,8 @@ class UsuarioController extends Controller
         try {    
             $validator = $r->validate([
                 'nombre' => 'required|string|min:3',
-                'cedula' =>'required|string|min:3',
-                'telefono'=>'required|string|min:3',
+                'cedula' =>'required|string|min:10',
+                'telefono'=>'required|string|min:10',
                 'correo'=> 'required',
                 'usuario'=>'required',
                 'idrol'=>'required',                
@@ -94,7 +94,6 @@ class UsuarioController extends Controller
                 "firma" =>0
             ]);            
         } 
-    
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $idEmpresa = $empresadata['IDEMPRESA'];
