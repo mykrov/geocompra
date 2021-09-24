@@ -17,6 +17,18 @@
     <link rel="stylesheet" type="text/css" href="assets/css/vendors.css" />
     <!-- app style -->
     <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+
+    <style>
+        input.invalid_field[type="text"]{
+            border-color: #ec2222;
+        }
+        input.invalid_field[type="password"]{
+            border-color: #ec2222;
+        }
+        select.invalid_field{
+            border: 1px solid red;
+        }
+    </style>
    
 </head>
 

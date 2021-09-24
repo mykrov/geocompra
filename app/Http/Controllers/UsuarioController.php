@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use AuthComtroller;
 use Session;
+use Validator;
 
 class UsuarioController extends Controller
 {
@@ -71,10 +72,8 @@ class UsuarioController extends Controller
 
     public function GuardaUsuario(Request $r){
 
-        $permisoID = 2;
-            
-        try {    
-            $validator = $r->validate([
+        $validator = Validator::make(
+            $r->all(), [
                 'nombre' => 'required|string|min:3',
                 'cedula' =>'required|string|min:10',
                 'telefono'=>'required|string|min:10',
@@ -82,18 +81,20 @@ class UsuarioController extends Controller
                 'usuario'=>'required',
                 'idrol'=>'required',                
                 'idbodega'=>'required',
-                'clave'=>'required'                
-            ]);
-
-        } catch (\Throwable $th) {
+                'clave'=>'required' 
+            ],
+        );
+    
+        if ($validator->fails()) {
             return response()->json([
-                "status"=>"error",
-                "success" => false,
-                "message" => "Debe llenar todos los campos del Formulario.",
-                "logo" =>0,
-                "firma" =>0
-            ]);            
-        } 
+                'status' => 'error',
+                'msg'    => 'Error',
+                'message'=>'Los campos en el formulario son necesarios.',
+                'fieldError' => $validator->errors()->keys(),
+            ], 200);    
+        }
+
+       
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $idEmpresa = $empresadata['IDEMPRESA'];
@@ -144,7 +145,7 @@ class UsuarioController extends Controller
                 "status"=>"error",
                 "success" => false,
                 "message" => "Ya existe usuario con esa cedula.",
-                "logo" =>0,
+                "fieldError" =>null,
                 "firma" =>0
             ]);
         }

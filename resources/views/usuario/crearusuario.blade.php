@@ -30,7 +30,7 @@
     </div>   
     <div class="form-group col-md-2">
         <label for="usuario">Nombre de Usuario</label>
-        <input name="usuario" type="usuario" class="form-control" id="usuario" aria-describedby="emailHelp" placeholder="" value="">
+        <input name="usuario" type="text" class="form-control" id="usuario" aria-describedby="emailHelp" placeholder="" value="">
         <small id="usuario" class="form-text text-muted">Username.</small>
     </div>
     <div class="form-group col-md-2">
@@ -174,6 +174,14 @@
                     
                 }else{
                     console.log(data);
+                    let fields = data.fieldError;
+                    if(fields != null){
+                        fields.forEach( function(valor, indice, array) {
+                            const element = document.getElementById(valor);
+                            element.classList.add("invalid_field");
+                        });
+                    }
+                   
                     swal({
                         position: 'top-end',
                         type: 'error',                          
@@ -210,25 +218,4 @@
         return true;
     }   
 
-    function verificarCedula(cedula) {
-    if (typeof(cedula) == 'string' && cedula.length == 10 && /^\d+$/.test(cedula)) {
-            var digitos = cedula.split('').map(Number);
-            var codigo_provincia = digitos[0] * 10 + digitos[1];
-
-            if (codigo_provincia >= 1 && (codigo_provincia <= 24 || codigo_provincia == 30) && digitos[2] < 6) {
-                if (codigo_provincia >= 1 && (codigo_provincia <= 24 || codigo_provincia == 30)) {
-                    
-                    var digito_verificador = digitos.pop();
-
-                    var digito_calculado = digitos.reduce(
-                        function (valorPrevio, valorActual, indice) {
-                            return valorPrevio - (valorActual * (2 - indice % 2)) % 9 - (valorActual == 9) * 9;
-                        }, 1000) % 10;
-                    console.log(digito_calculado === digito_verificador);
-                }
-            }
-            console.log('cedula mala');
-        }
-    }
-    
 </script>
