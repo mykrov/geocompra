@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\GEONCRCAB;
 use App\GEONCRDET;
+use App\GEOBODEGA;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use AuthComtroller;
@@ -65,11 +66,12 @@ class NotaCreditoController extends Controller
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $usuariodata=$session2['usuario'];
-        $idEmpresa = $empresadata['IDEMPRESA'];  
+        $idEmpresa = $empresadata['IDEMPRESA'];
+        
+        Log::info("reques NCR",["peticion"=>$r]);
         
         $cabecera = $r[0]['cabecera'];
         $detalles = $r[0]['detalles'];
-
         
         try {    
 
@@ -93,23 +95,30 @@ class NotaCreditoController extends Controller
             ]);            
         } 
         
-        $cont = GEONCRCAB::where('SECFACTURA',trim($r['facsecuencial']))
-        ->where('MOTIVO',$r['idmotivo'])
-        ->count();
+        $cont = 0;
 
         if($cont == 0){
 
-            $bodega = GEOBODEGA::where('IDBODEGA',$r["idbodega"])->first();
-            
+            $bodega = GEOBODEGA::where('IDBODEGA',$cabecera['idbodega'])->first();
+            if($bodega === null){
+                return response()->json([
+                    "status"=>"error",
+                    "success" => false,
+                    "message" => "No se encontró bodega.",
+                    "logo" =>0,
+                    "firma" =>0
+                ]); 
+            }
+
             $date = Carbon::now();
             $ncr = new GEONCRCAB(); 
-            $ncr->SUBTOTALBNCR = $r["subtotalncr"];
-            $ncr->DESCUENTONCR = $r["descuentoncr"];
+            $ncr->SUBTOTALBNCR = $cabecera["subtotalncr"];
+            $ncr->DESCUENTONCR = $cabecera["descuentoncr"];
 
-            $ncr->IVAFAC = $r["ivafac"];
-            $ncr->NETOFAC = $r["netofac"];
+            $ncr->IVAFAC = $cabecera["ivafac"];
+            $ncr->NETOFAC = $cabecera["netofac"];
             $ncr->FECHAEMI = $date->format('d-m-Y');
-            $ncr->SECFACTURA = $r["facsecuencial"];
+            $ncr->SECFACTURA = $cabecera["facsecuencial"];
             $ncr->CLAVEACCESO = "";
             $ncr->NOAUTORIZACION = "";
             $ncr->ARCHIVOXML = "";
@@ -118,21 +127,25 @@ class NotaCreditoController extends Controller
             $ncr->ARCHIVOPDF= "";
             $ncr->ARCHIVOERROR = "";
             $ncr->CODERROR = "";
-            $ncr->FECHAPROCESO = $r[""];
-            $ncr->HORAPROCESO = $r[""];
+            $ncr->FECHAPROCESO =$date->format('d-m-Y');
+            $ncr->HORAPROCESO = $date->format('d-m-Y');
             $ncr->ESTADOPROCESO = 'N';
             $ncr->IDUSUARIO = $usuariodata['IDUSUARIO'] ;
-            $ncr->MOTIVO = $r["idmotivo"];
+            $ncr->MOTIVO = $cabecera["idmotivo"];
             $ncr->IDEMPRESA = $idEmpresa;
-            $ncr->IDBODEGA = $r["idbodega"];
+            $ncr->IDBODEGA = $cabecera["idbodega"];
+            $ncr->SECUENCIALNCR = $bodega->NOSECUENCIALNCR + 1;
 
+            $bodega->NOSECUENCIALNCR = $bodega->NOSECUENCIALNCR + 1;
             try {
+                
                 DB::beginTransaction();
                 $ncr->save();
+                $bodega->save();
+
                 $linea =  1;
                 foreach ($detalles as $key => $value) {
-                    $deta = new GEONCRDET();
-                   
+                    $deta = new GEONCRDET();                   
                     $deta->IDEMPRESA= $idEmpresa;
                     $deta->IDSUCURSAL= 1;
                     $deta->LINEA= $linea;
@@ -143,7 +156,7 @@ class NotaCreditoController extends Controller
                     $deta->DESCUENTO= $value['descuento'];
                     $deta->IVA= $value['iva'];
                     $deta->NETO= $value['neto'];
-                    $deta->PORIVA= $value['poriva'];
+                    $deta->PORIVA= 0;
                     $deta->GRABAIVA= 'S';
                     $deta->SECUENCIALNCR = $ncr->SECUENCIALNCR;
                     $deta->save();

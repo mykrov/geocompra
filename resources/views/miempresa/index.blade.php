@@ -6,6 +6,7 @@
             </h1>
             <p>correo</p>
             <p>ruc</p>
+            
 
         </div>
     </div>

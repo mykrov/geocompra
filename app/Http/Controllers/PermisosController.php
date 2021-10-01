@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\GEOACCESOS;
 use App\GEOOPCION;
+use Session;
 
 class PermisosController extends Controller
 {

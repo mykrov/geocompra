@@ -389,7 +389,7 @@
         const tableDetNCR = document.getElementById("tbody_produtos_ncr");  
         for (const row of tableDetNCR.rows) {            
            // let idproducto  = $(row).find('td').find('.nombre_d').data('id');
-            let idproducto = $(row).find('td').find('.idproducto').data('id');
+            let idproducto = $(row).find('td').find('.codigo_d').data('id');
             let cantidad = $(row).find('td').find('.cantidad_d').val();
             let precio = $(row).find('td').find('.precio_d').val();
             let subtotal = $(row).find('td').find('.subtotal_d').val();
@@ -432,7 +432,7 @@
                 swal({
                     position: 'top-end',
                     type: 'success',
-                    title: 'Compra Guardada.',
+                    title: 'Nota de Crédito Guardada.',
                     showConfirmButton: false,
                     timer: 1200
                 })                      
@@ -442,7 +442,7 @@
                 swal({
                     position: 'top-end',
                     type: 'error',                          
-                    title: 'Error al guardar Compras',
+                    title: 'Error al guardar Nota de Crédito',
                     text:data.message,
                     showConfirmButton: false,
                     timer: 3200

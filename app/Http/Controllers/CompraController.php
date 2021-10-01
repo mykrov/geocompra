@@ -108,8 +108,8 @@ class CompraController extends Controller
             $cab->TIPODOC = 'FAC';
             $cab->MUMEROFAC = $cabecera['numfac'];
             $cab->NOAUTORIZACION = $cabecera['autorizacion'];
-            $cab->BODEGAORIGEN = $cabecera['bodegaori'];
-            $cab->BODEGADESTINO = $cabecera['bodegades'];
+            $cab->BODEGAORIGEN = 0;
+            $cab->BODEGADESTINO = $cabecera['bodegacompra'];
             $cab->IVA = $cabecera['iva'];
             $cab->SUBTOTAL = $cabecera['subtotal'];
             $cab->DESCUENTO = $cabecera['descuento'];
@@ -118,8 +118,7 @@ class CompraController extends Controller
             $cab->HORAEMI = '10:00';
             $cab->ESTADO = 'N';
             $cab->IDUSUARIO =  $session2['id'];
-            $cab->IDEMPRESA = $idEmpresa;
-            
+            $cab->IDEMPRESA = $idEmpresa;            
             
             try {
                 DB::beginTransaction();
@@ -169,7 +168,7 @@ class CompraController extends Controller
         }
     }
 
-    public function UpdateProducto(Request $r){
+    public function UpdateCompra(Request $r){
         
         try {    
             $validator = $r->validate([

@@ -122,6 +122,16 @@ Route::get('editaritembod/{id}','ItembodController@EditarItembod')->name('itembo
 Route::post('updateitembod','ItembodController@UpdateItembod')->name('itembodupdate');
 Route::post('deleteitembod','ItembodController@DeleteItembod')->name('itemboddelete');
 
+//proveedor
+Route::get('proveedor','ProveedorController@Index')->name('proveedorindex');
+Route::get('crearproveedor','ProveedorController@CrearProveedor')->name('proveedorcrear');
+Route::post('guardarproveedor','ProveedorController@GuardaProveedor')->name('proveedorguardar');
+Route::get('editarproveedor/{id}','ProveedorController@EditarProveedor')->name('proveedoreditar');
+Route::post('updateproveedor','ProveedorController@UpdateProveedor')->name('proveedorupdate');
+Route::post('deleteproveedor','ProveedorController@DeleteProveedor')->name('proveedordelete');
+
+
+
 //forma de pago
 Route::get('creaformapago','FormaPagoController@CrearFormaPago')->name('creaformapago');
 Route::post('guardaformapago','FormaPagoController@GuardaFormaPago')->name('guardaformapago');

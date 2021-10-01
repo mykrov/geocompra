@@ -29,23 +29,7 @@
                 <option value="{{$bodd->IDBODEGA }}" data-select6-id="1">{{$bodd->NOMBRECOMERCIAL}}</option>
             @endforeach                             
         </select>
-    </div>
-    <div class="form-group mb-0 col-md-4" data-select6-id="6">
-        <label>Bodega origen(Transferencia)</label>
-        <select class="js-basic-single form-control" id="bodegaori" data-select6-id="1" tabindex="-1" aria-hidden="true">
-            @foreach ($bodegas as $bod)
-                <option value="{{$bod->IDBODEGA }}" data-select6-id="1">{{$bod->NOMBRECOMERCIAL}}</option>
-            @endforeach                             
-        </select>
-    </div>
-    <div class="form-group mb-0 col-md-4" data-select6-id="6">
-        <label>Bodega Destino(Transferencia)</label>
-        <select class="js-basic-single form-control" id="bodegades" data-select6-id="1" tabindex="-1" aria-hidden="true">
-            @foreach ($bodegas as $bodd)
-                <option value="{{$bodd->IDBODEGA }}" data-select6-id="1">{{$bodd->NOMBRECOMERCIAL}}</option>
-            @endforeach                             
-        </select>
-    </div>    
+    </div> 
     <div class="form-group col-md-4">
         <label for="iva">IVA</label>
         <input name="iva" type="number" class="form-control" maxlength="40" id="iva" aria-describedby="emailHelp" placeholder="" value="">
@@ -274,7 +258,29 @@
 
     $('#tabla_productos_seleccion tbody').on( 'click', 'a', function () {
         var data = tableSelec.row( $(this).parents('tr') ).data();
-        $('#tabla_detalles_compra').append('<tr><td ><input type="text" class="codigo_d" disabled="true" value="'+data[1]+'"></input></td><td><input type="text" class="nombre_d" data-id="'+data[0]+'" disabled="true" value="'+data[2]+'"></td><td><input class="canti_d" type="number"></input></td><td><input class="costo_d" type="number"></input></td><td><input class="iva_d" type="number"></input></td><td><input class="neto_d" type="number"></input></td></tr>');
+        
+        if(existeItemTabla(data[0]) == false){
+            $('#tabla_detalles_compra').append('<tr><td ><input type="text" class="codigo_d" disabled="true" value="'+data[1]+'"></input></td><td><input type="text" class="nombre_d" data-id="'+data[0]+'" disabled="true" value="'+data[2]+'"></td><td><input class="canti_d" type="number"></input></td><td><input class="costo_d" type="number"></input></td><td><input class="iva_d" type="number"></input></td><td><input class="neto_d" type="number"></input></td></tr>');
+        }else{
+            Command: toastr["error"]("Ya existe el producto en los detalles.", "Error")
+            toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": 200,
+            "hideDuration": 300,
+            "timeOut": 1000,
+            "extendedTimeOut": 1000,
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+            }
+        }        
     } );
     
     $('.add_producto_nuevo').on('click',function(e){
@@ -453,5 +459,18 @@
             body: JSON.stringify(data) // body data type must match "Content-Type" header
         });
         return response.json(); // parses JSON response into native JavaScript objects
+    }
+
+    function existeItemTabla(id){
+        const table3 = document.getElementById("table_compra_detalles");
+        for (const rowl of table3.rows) {
+            let idproducto = $(rowl).find('td').find('.nombre_d').data('id');
+            console.log('el id que llega a la fuc ' + id)
+            console.log('id de la Data-Id en el row ' + idproducto)
+            if(idproducto == id){
+                return true;
+            }
+        }
+        return false;
     }
 </script>

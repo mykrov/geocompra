@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\GEOMARCA;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Hash;
 use AuthComtroller;
 use Session;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use App\GEOMARCA;
+
 
 
 class MarcaController extends Controller

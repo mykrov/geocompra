@@ -137,8 +137,16 @@
                                     @if (in_array($menu->IDMENU,$menItems))                                  
                                         <li class="inactive">
                                             <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
-                                                <i class="nav-icon ti ti-menu"></i>                                        
-                                                <span class="nav-title">{{ $menu->MENUNOMBRE }}</span>
+                                                <i class="nav-icon ti ti-menu"></i> 
+                                                @if($menu->MENUNOMBRE == 'EMPRESAS')
+                                                    @if (Session::get('rol') == 'ADM' || Session::get('rol') == 'OPE' )
+                                                        <span class="nav-title">MI EMPRESA</span>
+                                                    @else
+                                                        <span class="nav-title">{{ $menu->MENUNOMBRE }}</span>
+                                                    @endif
+                                                @else     
+                                                    <span class="nav-title">{{ $menu->MENUNOMBRE }}</span>                           
+                                                @endif
                                             </a>
                                             <ul aria-expanded="false">
                                                 @foreach (Session::get('submenus') as $item)
@@ -211,7 +219,7 @@
                                                             $totalComision = 0;     
                                                         @endphp
                                                         @foreach ($comisiones as $item)
-                                                            {{$totalComision = $totalComision + $item->NETO}}
+                                                           @php $totalComision = $totalComision + $item->MONTO @endphp
                                                         @endforeach
                                                         <h2 class="text-white mb-0">{{  $totalComision }}</h2>
                                                         <p class="text-white">Comisiones</p>
@@ -226,7 +234,6 @@
                         </div>
                         <!-- end row -->
                        
-              
                         <!-- event Modal -->
                         <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="verticalCenterTitle" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
