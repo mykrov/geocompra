@@ -227,6 +227,11 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-md-5" id="chart2"></div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-6" id="chart1"></div>
+                                        </div>
                                        
                                     </div>
                                 </div>
@@ -303,17 +308,91 @@
 
     <script>     
     
-        $('.url_menu_lateral').on('click',function(e){
-           //alert($(this).attr("id_url"));
-            $.ajax({
-                url: $(this).attr("id_url"),
-                type: 'GET',
-                data: null,
-                success: function (data) {
-                    $('#card-body-content').html(data);
-                }
-            })
+    $('.url_menu_lateral').on('click',function(e){
+        //alert($(this).attr("id_url"));
+        $.ajax({
+            url: $(this).attr("id_url"),
+            type: 'GET',
+            data: null,
+            success: function (data) {
+                $('#card-body-content').html(data);
+            }
         })
+    })
+        
+    let documentos2 = JSON.parse("{{ json_encode($chart1) }}".replace(/&quot;/g,'"'));
+    let fechasc = [];
+    let contador = [];
+    
+    $.each(documentos2,function(i,item){
+        fechasc.push(documentos2[i].FECHAEMI);
+        contador.push(documentos2[i].TOTAL);
+    });
+
+    const options = {
+        series: [{
+        name: 'Facturas por fechas',
+        data: contador
+        }],  
+        title: {
+        text: "Facturas por Fechas"
+    }, 
+        chart: {
+        height: 250,
+        type: 'bar'
+        },
+        dataLabels: {
+        enabled:true
+        },
+        stroke: {
+        curve: 'smooth'
+        },
+        xaxis: {
+        type: 'datetime',
+        categories: fechasc 
+        },
+        tooltip: {
+        x: {
+            format: 'yy-MM-dd HH:mm:s'
+        },
+        },
+    };
+    
+    const chart = new ApexCharts(document.querySelector("#chart2"), options);
+    chart.render();
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////
+    const documentos1 = JSON.parse("{{ json_encode($chart2) }}".replace(/&quot;/g,'"'));
+  
+      
+    let fechasc2 = [];
+    let contador2 = [];
+    let series3 = [];
+    let total = 0;
+
+    $.each(documentos1,function(i,item){
+        fechasc2.push(documentos1[i].FECHAEMI);
+        contador2.push(parseFloat(documentos1[i].NETO));
+        total = total + parseFloat(documentos1[i].NETO);
+    });
+
+    const options2 = {
+    series: contador2,
+    chart: {
+        height: 200,
+        type: 'pie',
+    },       
+    labels:fechasc2,
+    title: {
+        text: "Netos por dia"
+    },
+    };
+  
+    const chart2 = new ApexCharts(document.querySelector("#chart1"), options2);
+    chart2.render();
+
     </script>
 </body>
 

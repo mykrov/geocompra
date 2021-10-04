@@ -32,11 +32,20 @@ class DashboardController extends Controller
         $comisiones = DB::table('GEOCOMISIONES')
         ->get();
 
+        $chart1 = DB::table('GEOCABFACTURA')
+        ->where('IDEMPRESA', $idEmpresa)
+        ->select('FECHAEMI', DB::raw('count(FECHAEMI) as TOTAL'))
+        ->groupBy('FECHAEMI')
+        ->get();
+
+        return $chart1;
+
         return view('index',[
             'facturas'=>$facturas,
             'compras'=>$compras,
             'usuarios'=>$usuarios,
-            'comisiones'=>$comisiones
+            'comisiones'=>$comisiones,
+            'chart1'=>$chart1
         ]);
         
     }

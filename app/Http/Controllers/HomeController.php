@@ -34,11 +34,26 @@ class HomeController extends Controller
             $comisiones = DB::table('GEOCOMISIONES')
             ->get();
 
+            $chart1 = DB::table('GEOCABFACTURA')
+            ->where('IDEMPRESA', $idEmpresa)
+            ->select('FECHAEMI', DB::raw('count(FECHAEMI) as TOTAL'))
+            ->groupBy('FECHAEMI')
+            ->get();
+
+            $chart2 = DB::table('GEOCABFACTURA')
+            ->where('IDEMPRESA', $idEmpresa)
+            ->select('FECHAEMI', DB::raw('SUM(NETOFAC) as NETO'))
+            ->groupBy('FECHAEMI')
+            ->get();
+
+
             return view('index',[
                 'facturas'=>$facturas,
                 'compras'=>$compras,
                 'usuarios'=>$usuarios,
-                'comisiones'=>$comisiones
+                'comisiones'=>$comisiones,
+                'chart1'=>$chart1,
+                'chart2'=>$chart2
             ]);
                     
             //return view('index',['pagina'=>'Inicio','seccion'=>'Datos']);
