@@ -182,7 +182,6 @@
                                             @if (Session::get('rol') == 'PRO')
                                                <p style='color:red; font-weight: 500'> PROPIETARIO DEL SISTEMA<p>
                                             @endif
-                
                                             </h4>
                                         </div>
                                     </div>
@@ -228,11 +227,10 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-5" id="chart2"></div>
-                                            <div class="col-md-1"></div>
+                                            <div class="col-md-6" id="chart2"></div>
+                                            
                                             <div class="col-md-6" id="chart1"></div>
-                                        </div>
-                                       
+                                        </div> 
                                     </div>
                                 </div>
                             </div>
@@ -386,7 +384,7 @@
     },       
     labels:fechasc2,
     title: {
-        text: "Netos por dia"
+        text: "Netos por Día"
     },
     };
   

@@ -66,13 +66,18 @@
             </select>
         </div>
     @endif 
-  
-    <div class="form-group col-md-12 mt-3">
-        <button id="save_btn" type="submit" class="btn btn-primary mb-2">Guardar</button>
-    </div> 
-</form>
-<script>
 
+      <div class="form-group col-md-12 mt-3">
+        <button id="save_btn" type="submit" class="btn btn-primary mb-2">Guardar</button> 
+     </div> 
+     <div id="mapa" style="width:100%; height: 500px;">
+     </div>  
+  </form>
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCj2cMW4qJpN6nRUO9UxWwxJn0HqaSDuB4&callback=initMap">
+  </script>
+
+<script>
     $("form#bodega_form").submit(function(e) {
             
             e.preventDefault();                
@@ -118,4 +123,36 @@
                 processData: false,                
             });
         });
+
 </script>
+<script>
+    let map;
+    function initMap(){
+        map = new google.maps.Map(document.getElementById("mapa"), {
+         center: { lat:  -2.1037199992126587, lng: -79.9079500 },//, -79.92878726811496
+         zoom: 12,
+       //  center: new google.maps.LatLng(-2.2058400,-79.9079500);
+         });
+         marcador= new google.maps.Marker({
+             map:map,
+             draggable:true,
+             position:{ lat:  -2.1037199992126587, lng: -79.9079500 },
+         });
+         marcador.addListener('dragend',function(event){
+             document.getElementById('latitud').value=this.getPosition().lat();
+             document.getElementById('longitud').value=this.getPosition().lng();
+         });
+
+    }
+    function generarMapas(coordenadas){
+        console.log(coordenadas);
+        var mapa=new google.maps.Map(document.getElementById('mapa'),
+        {
+            zoom:15,
+           // center: new google.maps.LatLng(coordenadas.lat,coordenadas.lng);
+        });
+        console.log(mapa);
+    }
+</script>
+
+
