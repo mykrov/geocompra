@@ -23,17 +23,21 @@ class HomeController extends Controller
             ->where('IDEMPRESA',$idEmpresa)
             ->get();
 
+            //facturas que sean del dia.
             $facturas = DB::table('GEOCABFACTURA')
             ->where('IDEMPRESA',$idEmpresa)
             ->get();
 
+            //diaria.
             $compras = DB::table('GEOCABINGRESO')
             ->where('IDEMPRESA',$idEmpresa)
             ->get();
 
+            //diario.
             $comisiones = DB::table('GEOCOMISIONES')
             ->get();
 
+            //rango de un mes para los charts . para PRO todos.
             $chart1 = DB::table('GEOCABFACTURA')
             ->where('IDEMPRESA', $idEmpresa)
             ->select('FECHAEMI', DB::raw('count(FECHAEMI) as TOTAL'))

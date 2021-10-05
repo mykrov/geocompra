@@ -72,6 +72,8 @@ Route::post('guardarbodega','BodegaController@GuardaBodega')->name('bodegaguarda
 Route::get('editarbodega/{id}','BodegaController@EditarBodega')->name('bodegaeditar');
 Route::post('updatebodega','BodegaController@UpdateBodega')->name('bodegaupdate');
 Route::post('deletebodega','BodegaController@DeleteBodega')->name('bodegadelete');
+Route::get('transferencia','TransBodegaController@Index')->name('bodegatrans');
+Route::post('transcrear','TransBodegaController@CrearTransBodega')->name('creartrans');
 
 //categorias
 Route::get('categoria','CategoriaController@Index')->name('categoriaindex');
