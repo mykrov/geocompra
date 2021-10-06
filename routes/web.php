@@ -149,6 +149,10 @@ Route::get('indexguiarem','GuiaRemisionController@Index')->name('guiaremindex');
 Route::get('crearguiarem','GuiaRemisionController@CrearGuiaRemision')->name('guiaremcrear');
 Route::post('guardarguiarem','GuiaRemisionController@GuardarGuiaRemision')->name('guiaremguardar');
 
+//Reportes
+Route::get('reporteindex','ReporteController@Index')->name('reporteindex');
+Route::post('buscareporte','ReporteController@BuscaReporte')->name('buscareporte');
+
 
 Route::post('authlogin','AuthController@Login')->name('authlogin');
 Route::get('createuser','AuthController@Createuser');
