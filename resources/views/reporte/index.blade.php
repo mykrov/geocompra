@@ -29,7 +29,7 @@
         <label>Empresa</label>
         <select class="js-basic-single form-control" id="idempresa" name="idempresa" data-select6-id="1" tabindex="-1" aria-hidden="true">
             @foreach ($empresas as $empre)
-                <option value="{{ $empre->IDEMPRESA }}" data-select6-id="1">{{ $empre->RAZONSOCIAL }}</option>
+                <option value="{{ $empre->IDEMPRESA }}" data-select6-id="1">{{$empre->IDEMPRESA.'-'. $empre->RAZONSOCIAL }}</option>
             @endforeach                             
         </select>
     </div>   
@@ -37,11 +37,22 @@
         <button id="buscar_informe" type="submit" class="btn btn-primary mb-2">Buscar</button>
     </div> 
 </form>
-<div class="row col-md-12">
-    <div class="col-md-12 mt-3" id="reporte_div">
-    </div>
+
+<div class="" id="reporte_div">
+</div>
+
+
+   
 </div>
 <script>
+
+    var date = new Date();
+    var currentDate = date.toISOString().substring(0,10);
+    document.getElementById('fechadesde').value = currentDate;
+    document.getElementById('fechahasta').value = currentDate;
+   
+     
+   
     $("#buscar_informe").on('click',function(e) {
         e.preventDefault();
         let myForm = document.getElementById('reporte_form');
@@ -52,11 +63,13 @@
             data: formData,
             success: function (data) {
                 $('#reporte_div').html(data);
+                
+          
             },
             cache: false,
             contentType: false,
             processData: false,                
-        });
+            });
     });
 </script>
 

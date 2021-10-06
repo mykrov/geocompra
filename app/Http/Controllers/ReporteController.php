@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use AuthComtroller;
+use Carbon\Carbon;
 use Session;
 
 class ReporteController extends Controller
@@ -30,16 +31,17 @@ class ReporteController extends Controller
         $desde = $r['fechadesde'];
         $hasta = $r['fechahasta'];
 
+        Log::info('empresa buscada'. $r['idempresa']);
+
         $session2 = Session::get('usuario');
         $empresadata = $session2['empresa']; 
         $dataUsuario = $session2['usuario'];
         $idEmpresa = $empresadata['IDEMPRESA'];
         
         if($r['tipoinforme'] == 'empresas'){
-            Log::info('Reporte de Empresas');
-            return $this->BuscaEmpresas($desde,$hasta,$idEmpresa);
-        }elseif($r['tipoinforme'] == 'comisiones'){
-
+            return $this->BuscaEmpresas($desde,$hasta,$r['idempresa']);
+        }elseif($r['tipoinforme'] == 'ventas'){
+            return $this->BuscarVentas($desde,$hasta,$r['idempresa']);
         }
        
     }
@@ -82,7 +84,36 @@ class ReporteController extends Controller
         }
     }
 
+    public function BuscarVentas($desde,$hasta,$idEmpresa){
+
+        $f1 = Carbon::createFromFormat('Y-m-d',$desde);
+        $f2 = Carbon::createFromFormat('Y-m-d',$hasta);
+        $fecD = $f1->format('d-m-Y ').'00:00:00';
+        $fecH = $f2->format('d-m-Y ').'00:00:00';
+        
+        $facturas = DB::table('GEOCABFACTURA')
+        ->join('GEOCLIENTE','GEOCABFACTURA.CLIENTE','GEOCLIENTE.IDCLIENTE')
+        ->where('GEOCABFACTURA.IDEMPRESA',$idEmpresa)
+        ->whereBetween('GEOCABFACTURA.FECHAEMI',array($fecD, $fecH))
+        ->select([
+            'GEOCABFACTURA.FECHAEMI',
+            'GEOCABFACTURA.NUMEROFAC',
+            'GEOCLIENTE.NOMBRECLIENTE as CLIENTE',
+            'GEOCABFACTURA.SUBTOTALFAC',
+            'GEOCABFACTURA.SUBTOTAL0',
+            'GEOCABFACTURA.IVAFAC',
+            'GEOCABFACTURA.NETOFAC',
+            'GEOCABFACTURA.ESTADOPROCESO as ESTADO'
+        ])
+        ->get();
+        
+        return view('reporte.ventas',['ventas'=>$facturas]);
+
+    }
+
     public function comisiones($desde,$hasta,$idEmpresa){
 
     }
+
+   
 }
