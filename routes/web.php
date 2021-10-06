@@ -144,6 +144,11 @@ Route::get('crearncr','NotaCreditoController@CrearNotaCredito')->name('ncrcrear'
 Route::get('facturalist','NotaCreditoController@getFacturas')->name('getfacturas');
 Route::post('guardancr','NotaCreditoController@GuardaNcr')->name('ncrguardar');
 
+//Guia Remision
+Route::get('indexguiarem','GuiaRemisionController@Index')->name('guiaremindex');
+Route::get('crearguiarem','GuiaRemisionController@CrearGuiaRemision')->name('guiaremcrear');
+Route::post('guardarguiarem','GuiaRemisionController@GuardarGuiaRemision')->name('guiaremguardar');
+
 
 Route::post('authlogin','AuthController@Login')->name('authlogin');
 Route::get('createuser','AuthController@Createuser');
