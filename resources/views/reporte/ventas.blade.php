@@ -1,42 +1,41 @@
 
-    <div class="row col-xs-5">
-        <table style="max-width: 500px" class="table data-table table-responsive table-striped" id="table-venta">
-            <thead>  
-                <tr>
-                    <th>Fecha</th>
-                    <th>Documento</th>
-                    <th>Razon Social</th>
-                    <th>SubTotal</th>
-                    <th>SubTotal0</th>
-                    <th>IVA</th>
-                    <th>Neto</th>
-                    <th>Estado</th>
-                   
-                </tr> 
-            </thead>
-            <tbody>
-                @foreach ($ventas as $venta)
-                    <tr>
-                        <td>{{ $venta->FECHAEMI }}</td>
-                        <td>{{ $venta->NUMEROFAC }}</td>
-                        <td>{{ $venta->CLIENTE }}</td>
-                        <td>{{ $venta->SUBTOTALFAC }}</td>
-                        <td>{{ $venta->SUBTOTAL0 }}</td>
-                        <td>{{ $venta->IVAFAC }}</td>
-                        <td>{{ $venta->NETOFAC }}</td>
-                        <td>@if ($venta->ESTADO =='N')
-                                No Procesado
-                            @elseif($venta->ESTADO =='A') 
-                                Procesado
-                            @else
-                                Error
-                            @endif
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+<table  class="table data-table table-striped" id="table-venta">
+    <thead>  
+        <tr>
+            <th>Fecha</th>
+            <th>Documento</th>
+            <th>Razon Social</th>
+            <th>SubTotal</th>
+            <th>SubTotal0</th>
+            <th>IVA</th>
+            <th>Neto</th>
+            <th>Estado</th>
+            
+        </tr> 
+    </thead>
+    <tbody>
+        @foreach ($ventas as $venta)
+            <tr>
+                <td>{{ $venta->FECHAEMI }}</td>
+                <td>{{ $venta->NUMEROFAC }}</td>
+                <td>{{ $venta->CLIENTE }}</td>
+                <td>{{ $venta->SUBTOTALFAC }}</td>
+                <td>{{ $venta->SUBTOTAL0 }}</td>
+                <td>{{ $venta->IVAFAC }}</td>
+                <td>{{ $venta->NETOFAC }}</td>
+                <td>@if ($venta->ESTADO =='N')
+                        No Procesado
+                    @elseif($venta->ESTADO =='A') 
+                        Procesado
+                    @else
+                        Error
+                    @endif
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+
 
 <script>
          $('#table-venta').DataTable({
