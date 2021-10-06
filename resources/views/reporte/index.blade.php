@@ -11,8 +11,7 @@
         <select class="js-basic-single form-control" id="tipoinforme" name="tipoinforme"  tabindex="-1" aria-hidden="true">
             <option value="empresas" >Empresas Implementadas</option>     
             <option value="comisiones" >Comisiones</option>
-            <option value="ventas" >Ventas</option>  
-            <option value="contratos" >Contratos</option>                         
+            <option value="ventas" >Ventas</option>
         </select>
     </div>  
     <div class="form-group col-md-2">
