@@ -50,7 +50,8 @@ class AuthController extends Controller
                     'GEOOPCION.IDOPCION',                        
                     'GEOOPCION.IDMENU',                        
                     'GEOOPCION.URLOPCION',
-                    'GEOACCESOS.ESMENU'
+                    'GEOACCESOS.ESMENU',
+                    'GEOACCESOS.ESTADO'
                 )
                 ->get();
 
@@ -72,7 +73,8 @@ class AuthController extends Controller
                         'GEOOPCION.IDOPCION',                        
                         'GEOOPCION.IDMENU',                        
                         'GEOOPCION.URLOPCION',
-                        'GEOACCESOS.ESMENU'
+                        'GEOACCESOS.ESMENU',
+                        'GEOACCESOS.ESTADO'
                     )
                     ->get();                   
                 }                

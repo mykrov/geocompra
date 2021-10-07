@@ -129,8 +129,10 @@
                             @php
                                 $menItems = array();
                                 foreach(Session::get('submenus') as $key => $value){
-                                    $menItems[] = $value->IDMENU;
-                                }                                
+                                    if($value->ESTADO == 'S'){
+                                        $menItems[] = $value->IDMENU;
+                                    }                                   
+                                }                                                              
                             @endphp
                             @if (Session::has('menus'))                            
                                 @foreach (Session::get('menus') as $menu)
@@ -150,7 +152,7 @@
                                             </a>
                                             <ul aria-expanded="false">
                                                 @foreach (Session::get('submenus') as $item)
-                                                    @if ($item->IDMENU == $menu->IDMENU && $item->ESMENU == 'S')
+                                                    @if ($item->IDMENU == $menu->IDMENU && $item->ESMENU == 'S' && $item->ESTADO == 'S')
                                                         <li class="active" > <a class="url_menu_lateral" href="javascript:void(0)" id_url='{{route("$item->URLOPCION")}}'>{{ $item->NOMBREOPCION }}</a> </li>  
                                                     @endif
                                                 @endforeach                                
@@ -221,7 +223,13 @@
                                                            @php $totalComision = $totalComision + $item->MONTO @endphp
                                                         @endforeach
                                                         <h2 class="text-white mb-0">{{  $totalComision }}</h2>
-                                                        <p class="text-white">Comisiones</p>
+                                                        <p class="text-white">
+                                                            @if (Session::get('rol') == 'ADM' || Session::get('rol') == 'OPE' || Session::get('rol') == 'REP' )
+                                                                Pago de Servicio Plataforma
+                                                            @else
+                                                                Comisiones
+                                                            @endif
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -306,91 +314,102 @@
 
     <script>     
     
-    $('.url_menu_lateral').on('click',function(e){
-        //alert($(this).attr("id_url"));
-        $.ajax({
-            url: $(this).attr("id_url"),
-            type: 'GET',
-            data: null,
-            success: function (data) {
-                $('#card-body-content').html(data);
-            }
-        })
-    })
+        if($("#chart1").length > 0) {
+            
+            let documentos2 = JSON.parse("{{ json_encode($chart1) }}".replace(/&quot;/g,'"'));
+            let fechasc = [];
+            let contador = [];
+            
+            $.each(documentos2,function(i,item){
+                fechasc.push(documentos2[i].FECHAEMI);
+                contador.push(documentos2[i].TOTAL);
+            });
+
+            const options = {
+                series: [{
+                id: 'chart_1',
+                name: 'Facturas por fechas',
+                data: contador
+                }],  
+                title: {
+                text: "Facturas por Fechas"
+            }, 
+                chart: {
+                height: 250,
+                type: 'bar'
+                },
+                dataLabels: {
+                enabled:true
+                },
+                stroke: {
+                curve: 'smooth'
+                },
+                xaxis: {
+                type: 'datetime',
+                categories: fechasc 
+                },
+                tooltip: {
+                x: {
+                    format: 'yy-MM-dd HH:mm:s'
+                },
+                },
+            };
+            
+            var chart = new ApexCharts(document.querySelector("#chart2"), options);
+            chart.render();
+
+            //////////////////////////////////////////////////////////////////////////////////
+            const documentos1 = JSON.parse("{{ json_encode($chart2) }}".replace(/&quot;/g,'"'));
         
-    let documentos2 = JSON.parse("{{ json_encode($chart1) }}".replace(/&quot;/g,'"'));
-    let fechasc = [];
-    let contador = [];
+            
+            let fechasc2 = [];
+            let contador2 = [];
+            let series3 = [];
+            let total = 0;
+
+            $.each(documentos1,function(i,item){
+                fechasc2.push(documentos1[i].FECHAEMI);
+                contador2.push(parseFloat(documentos1[i].NETO));
+                total = total + parseFloat(documentos1[i].NETO);
+            });
+
+            const options2 = {
+            series: contador2,
+            id: 'chart_2',
+            chart: {
+                height: 200,
+                type: 'pie',
+            },       
+            labels:fechasc2,
+            title: {
+                text: "Netos por Día"
+            },
+            };
+        
+            var chart2 = new ApexCharts(document.querySelector("#chart1"), options2);
+            chart2.render();
+        }
+
+        $('.url_menu_lateral').on('click',function(e){
+           
+            if($("#chart1").length > 0) {
+                var chart_2l = chart2;
+                var chartl = chart;
+                chart_2l.destroy();
+                chartl.destroy();
+            }
+            
+            
+            $.ajax({
+                url: $(this).attr("id_url"),
+                type: 'GET',
+                data: null,
+                success: function (data) {
+                    $('#card-body-content').html(data);
+                }
+            })
+        })
     
-    $.each(documentos2,function(i,item){
-        fechasc.push(documentos2[i].FECHAEMI);
-        contador.push(documentos2[i].TOTAL);
-    });
-
-    const options = {
-        series: [{
-        name: 'Facturas por fechas',
-        data: contador
-        }],  
-        title: {
-        text: "Facturas por Fechas"
-    }, 
-        chart: {
-        height: 250,
-        type: 'bar'
-        },
-        dataLabels: {
-        enabled:true
-        },
-        stroke: {
-        curve: 'smooth'
-        },
-        xaxis: {
-        type: 'datetime',
-        categories: fechasc 
-        },
-        tooltip: {
-        x: {
-            format: 'yy-MM-dd HH:mm:s'
-        },
-        },
-    };
-    
-    const chart = new ApexCharts(document.querySelector("#chart2"), options);
-    chart.render();
-
-
-
-    //////////////////////////////////////////////////////////////////////////////////
-    const documentos1 = JSON.parse("{{ json_encode($chart2) }}".replace(/&quot;/g,'"'));
-  
-      
-    let fechasc2 = [];
-    let contador2 = [];
-    let series3 = [];
-    let total = 0;
-
-    $.each(documentos1,function(i,item){
-        fechasc2.push(documentos1[i].FECHAEMI);
-        contador2.push(parseFloat(documentos1[i].NETO));
-        total = total + parseFloat(documentos1[i].NETO);
-    });
-
-    const options2 = {
-    series: contador2,
-    chart: {
-        height: 200,
-        type: 'pie',
-    },       
-    labels:fechasc2,
-    title: {
-        text: "Netos por Día"
-    },
-    };
-  
-    const chart2 = new ApexCharts(document.querySelector("#chart1"), options2);
-    chart2.render();
-
     </script>
 </body>
 
