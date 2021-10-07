@@ -28,6 +28,28 @@
         select.invalid_field{
             border: 1px solid red;
         }
+
+        .top-bar .navbar .nav-link {
+            
+            padding: 1.4rem 1rem 1.4rem 1rem;
+            font-size: 18px;
+            color: rgb(39, 102, 219);
+            font-weight: 600;
+        }
+        .top-bar .navbar .nav-left .dropdown-menu, .top-bar .navbar .nav-right .dropdown-menu {
+            background: #eceef3;
+            border: none;
+            -webkit-box-shadow: 0 1px 20px rgb(115 105 215 / 25%);
+            -moz-box-shadow: 0 1px 20px rgba(115,105,215,.25);
+            box-shadow: 0 1px 20px rgb(115 105 215 / 25%);
+            padding: 0;
+            border-radius: 4px 24px 4px 23px;
+            margin-top: 1rem;
+            visibility: hidden;
+            display: block;
+            opacity: 0;
+            transition: all .3s ease-in-out;
+        }
     </style>
    
 </head>
@@ -76,6 +98,62 @@
                                     <a href="javascript:void(0)" class="nav-link expand">
                                         <i class="icon-size-fullscreen"></i>
                                     </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="dropdown-item nav-link" href="javascript:void(0)">Inicio</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a href="javascript:void(0)" class="nav-link " id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Empresa
+                                        <i class="fa fa-angle-down"></i>
+                                    </a>
+                                    <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Datos de Empresa</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a href="javascript:void(0)" class="nav-link " id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Inventario
+                                        <i class="fa fa-angle-down"></i>
+                                    </a>
+                                    <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Crear Producto</a>
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Producto Compuesto</a>
+                                        <div class="dropdown-divider"></div>
+                                        <span style="margin-left: 1rem;font-size: 0.8rem;color: rgb(42, 120, 165);">MANTENIMIENTO</span>
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Categoria</a>
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Marca</a>
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Proveedor</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a href="javascript:void(0)" class="nav-link " id="navbarDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Transacciones
+                                        <i class="fa fa-angle-down"></i>
+                                    </a>
+                                    <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Nota de Crédito</a>
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Guia de Remisión</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a href="javascript:void(0)" class="nav-link " id="navbarDropdown4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Movimientos
+                                        <i class="fa fa-angle-down"></i>
+                                    </a>
+                                    <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Compras</a>
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Productos por Bodega</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a href="javascript:void(0)" class="nav-link " id="navbarDropdown4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Parametros
+                                        <i class="fa fa-angle-down"></i>
+                                    </a>
+                                    <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Permisos</a>
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Bodegas</a>
+                                        <div class="dropdown-divider"></div>
+                                        <span style="margin-left: 1rem;font-size: 0.8rem;color: rgb(42, 120, 165);">USUARIO</span>
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Crear Usuario</a>
+                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Repartidor</a>                                        
+                                    </div>
                                 </li>
                             </ul>
                             <ul class="navbar-nav nav-right ml-auto">
