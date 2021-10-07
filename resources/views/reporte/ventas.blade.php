@@ -19,10 +19,10 @@
                 <td>{{ $venta->FECHAEMI }}</td>
                 <td>{{ $venta->NUMEROFAC }}</td>
                 <td>{{ $venta->CLIENTE }}</td>
-                <td>{{ $venta->SUBTOTALFAC }}</td>
-                <td>{{ $venta->SUBTOTAL0 }}</td>
-                <td>{{ $venta->IVAFAC }}</td>
-                <td>{{ $venta->NETOFAC }}</td>
+                <td>{{ round($venta->SUBTOTALFAC,2) }}</td>
+                <td>{{ round($venta->SUBTOTAL0,2) }}</td>
+                <td>{{ round($venta->IVAFAC,2) }}</td>
+                <td>{{ round($venta->NETOFAC,2) }}</td>
                 <td>@if ($venta->ESTADO =='N')
                         No Procesado
                     @elseif($venta->ESTADO =='A') 

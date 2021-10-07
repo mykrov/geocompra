@@ -3,34 +3,18 @@
     <thead>  
         <tr>
             <th>Fecha</th>
-            <th>Documento</th>
-            <th>Razon Social</th>
-            <th>SubTotal</th>
-            <th>SubTotal0</th>
-            <th>IVA</th>
-            <th>Neto</th>
-            <th>Estado</th>
-            
+            <th>Empresa</th>
+            <th>Monto</th>
+            <th>SecFactura</th>
         </tr> 
     </thead>
     <tbody>
-        @foreach ($ventas as $venta)
+        @foreach ($comisiones as $comsion)
             <tr>
-                <td>{{ $venta->FECHAEMI }}</td>
-                <td>{{ $venta->NUMEROFAC }}</td>
-                <td>{{ $venta->CLIENTE }}</td>
-                <td>{{ $venta->SUBTOTALFAC }}</td>
-                <td>{{ $venta->SUBTOTAL0 }}</td>
-                <td>{{ $venta->IVAFAC }}</td>
-                <td>{{ $venta->NETOFAC }}</td>
-                <td>@if ($venta->ESTADO =='N')
-                        No Procesado
-                    @elseif($venta->ESTADO =='A') 
-                        Procesado
-                    @else
-                        Error
-                    @endif
-                </td>
+                <td>{{ $comsion->FECHACREACION }}</td>
+                <td>{{ $comsion->EMPRESA }}</td>
+                <td>{{ round($comsion->MONTO ,2)}}</td>
+                <td>{{ $comsion->SECUENCIALFAC }}</td>
             </tr>
         @endforeach
     </tbody>

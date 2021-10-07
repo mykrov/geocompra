@@ -42,6 +42,8 @@ class ReporteController extends Controller
             return $this->BuscaEmpresas($desde,$hasta,$r['idempresa']);
         }elseif($r['tipoinforme'] == 'ventas'){
             return $this->BuscarVentas($desde,$hasta,$r['idempresa']);
+        }elseif($r['tipoinforme'] == 'comisiones'){
+            return $this->BuscarComisiones($desde,$hasta,$r['idempresa']);
         }
        
     }
@@ -111,8 +113,26 @@ class ReporteController extends Controller
 
     }
 
-    public function comisiones($desde,$hasta,$idEmpresa){
-
+    public function BuscarComisiones($desde,$hasta,$idEmpresa){
+        
+        $f1 = Carbon::createFromFormat('Y-m-d',$desde);
+        $f2 = Carbon::createFromFormat('Y-m-d',$hasta);
+        $fecD = $f1->format('d-m-Y ').'00:00:00';
+        $fecH = $f2->format('d-m-Y ').'00:00:00';
+        
+        $comisiones = DB::table('GEOCOMISIONES')
+        ->join('GEOEMPRESA','GEOCOMISIONES.IDEMPRESA','GEOEMPRESA.IDEMPRESA')
+        ->where('GEOCOMISIONES.IDEMPRESA',$idEmpresa)
+        ->whereBetween('GEOCOMISIONES.FECHACREACION',array($fecD, $fecH))
+        ->select([
+            'GEOCOMISIONES.FECHACREACION',
+            'GEOEMPRESA.RAZONSOCIAL as EMPRESA',
+            'GEOCOMISIONES.MONTO',
+            'GEOCOMISIONES.SECUENCIALFAC',
+        ])
+        ->get();
+        
+        return view('reporte.comisiones',['comisiones'=>$comisiones]);
     }
 
    
