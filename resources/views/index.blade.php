@@ -35,20 +35,31 @@
             font-size: 18px;
             color: rgb(39, 102, 219);
             font-weight: 600;
-        }
+        }   
         .top-bar .navbar .nav-left .dropdown-menu, .top-bar .navbar .nav-right .dropdown-menu {
-            background: #eceef3;
+            background: #ffffff;
             border: none;
             -webkit-box-shadow: 0 1px 20px rgb(115 105 215 / 25%);
             -moz-box-shadow: 0 1px 20px rgba(115,105,215,.25);
             box-shadow: 0 1px 20px rgb(115 105 215 / 25%);
-            padding: 0;
-            border-radius: 4px 24px 4px 23px;
+            padding: 13px;
+            border-radius: 4px 5px 4px 5px;
             margin-top: 1rem;
             visibility: hidden;
             display: block;
             opacity: 0;
             transition: all .3s ease-in-out;
+        }
+        .top-bar .navbar .nav-left .nav-item.dropdown .dropdown-menu a {
+            padding: .7rem 1.5rem .7rem 1.5rem;
+            font-size: 1rem;
+            line-height: 18px;
+            border: 2px solid #ddc8c8;
+            border-radius: 8px;
+            background: #1c3195;
+            color: white;
+            margin-top: 3px;
+            padding: autto;
         }
     </style>
    
