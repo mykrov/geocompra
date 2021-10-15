@@ -118,7 +118,7 @@
                                         <i class="fa fa-angle-down"></i>
                                     </a>
                                     <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Datos de Empresa</a>
+                                        <a class="dropdown-item nav-link url_menu_top" id_url="{{ route('empresaindex') }}" href="javascript:void(0)">Datos de Empresa</a>
                                     </div>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -126,13 +126,13 @@
                                         <i class="fa fa-angle-down"></i>
                                     </a>
                                     <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Crear Producto</a>
+                                        <a class="dropdown-item nav-link url_menu_top" id_url="{{ route('productocrear') }}" href="javascript:void(0)">Crear Producto</a>
                                         <a class="dropdown-item nav-link" href="javascript:void(0)">Producto Compuesto</a>
                                         <div class="dropdown-divider"></div>
                                         <span style="margin-left: 1rem;font-size: 0.8rem;color: rgb(42, 120, 165);">MANTENIMIENTO</span>
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Categoria</a>
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Marca</a>
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Proveedor</a>
+                                        <a class="dropdown-item nav-link url_menu_top" id_url="{{ route('categoriaindex') }}" href="javascript:void(0)">Categoria</a>
+                                        <a class="dropdown-item nav-link url_menu_top" id_url="{{ route('marcaindex') }}" href="javascript:void(0)">Marca</a>
+                                        <a class="dropdown-item nav-link url_menu_top" id_url="{{ route('proveedorindex') }}"  href="javascript:void(0)">Proveedor</a>
                                     </div>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -140,8 +140,8 @@
                                         <i class="fa fa-angle-down"></i>
                                     </a>
                                     <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Nota de Crédito</a>
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Guia de Remisión</a>
+                                        <a class="dropdown-item nav-link url_menu_top" id_url="{{ route('ncrindex') }}" href="javascript:void(0)">Nota de Crédito</a>
+                                        <a class="dropdown-item nav-link url_menu_top" id_url="{{ route('guiaremindex') }}" href="javascript:void(0)">Guia de Remisión</a>
                                     </div>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -149,8 +149,8 @@
                                         <i class="fa fa-angle-down"></i>
                                     </a>
                                     <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Compras</a>
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Productos por Bodega</a>
+                                        <a class="dropdown-item nav-link url_menu_top" id_url="{{ route('compraindex') }}" href="javascript:void(0)">Compras</a>
+                                        <a class="dropdown-item nav-link url_menu_top" id_url="{{ route('itembodindex') }}" href="javascript:void(0)">Productos por Bodega</a>
                                     </div>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -158,12 +158,11 @@
                                         <i class="fa fa-angle-down"></i>
                                     </a>
                                     <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Permisos</a>
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Bodegas</a>
+                                        <a class="dropdown-item nav-link url_menu_top" id_url="{{ route('bodegacrear') }}" href="javascript:void(0)">Crear Bodegas</a>
                                         <div class="dropdown-divider"></div>
                                         <span style="margin-left: 1rem;font-size: 0.8rem;color: rgb(42, 120, 165);">USUARIO</span>
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Crear Usuario</a>
-                                        <a class="dropdown-item nav-link" href="javascript:void(0)">Repartidor</a>                                        
+                                        <a class="dropdown-item nav-link url_menu_top" id_url="{{ route('usuarioindex') }}" href="javascript:void(0)">Usuarios</a>
+                                        <a class="dropdown-item nav-link url_menu_top" id_url="{{ route('repartidorindex') }}" href="javascript:void(0)">Repartidores</a>                                        
                                     </div>
                                 </li>
                             </ul>
@@ -498,6 +497,27 @@
                 }
             })
         })
+
+        $('.url_menu_top').on('click',function(e){
+           
+           if($("#chart1").length > 0) {
+               var chart_2l = chart2;
+               var chartl = chart;
+               chart_2l.destroy();
+               chartl.destroy();
+           }
+           
+            let urlvar = $(this).attr("id_url")
+
+           $.ajax({
+               url:urlvar ,
+               type: 'GET',
+               data: null,
+               success: function (data) {
+                   $('#card-body-content').html(data);
+               }
+           })
+       })
     
     </script>
 </body>
