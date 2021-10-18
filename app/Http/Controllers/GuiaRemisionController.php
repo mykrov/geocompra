@@ -64,7 +64,7 @@ class GuiaRemisionController extends Controller
         ->join('GEOUSUARIO','GEOUSUARIO.IDUSUARIO','GEOREPARTIDOR.IDUSUARIO')
         ->where('GEOUSUARIO.IDEMPRESA',$idEmpresa)
         ->select('GEOUSUARIO.NOMBRE','GEOUSUARIO.TELEFONO',
-        'GEOREPARTIDOR.VEHICULO','GEOREPARTIDOR.PLACA')
+        'GEOREPARTIDOR.VEHICULO','GEOREPARTIDOR.PLACA','GEOUSUARIO.IDUSUARIO')
         ->get();
 
         $motivosguias= DB::table('GEOMOTIVOGUIA')->get();
