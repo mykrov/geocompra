@@ -83,7 +83,7 @@
             <header class="app-header top-bar">
                 <!-- begin navbar -->
                 <nav class="navbar navbar-expand-md">
-
+                  
                     <!-- begin navbar-header -->
                     <div class="navbar-header d-flex align-items-center">
                         <a href="javascript:void:(0)" class="mobile-toggle"><i class="ti ti-align-right"></i></a>
@@ -188,7 +188,6 @@
                                                 <h5 class="text-white">{{ $usuarioActual['CORREO']  }}</h5>
                                                 </div>
                                                 
-                                                
                                                 <a href="{{route('logout')}}" class="text-white font-20 tooltip-wrapper" data-toggle="tooltip" data-placement="top" title="" data-original-title="Logout"> <i
                                                                 class="zmdi zmdi-power"></i></a>
                                             </div>
@@ -213,7 +212,8 @@
                             <li class="nav-static-title">GeoCompra Menu</li> 
                             <li><a href="{{ route('index') }}" aria-expanded="false"><i class="nav-icon ti ti-desktop">
                                 </i><span class="nav-title">Dashboard</span></a> 
-                            </li>                                                       
+                            </li>
+                           
                             @php
                                 $menItems = array();
                                 foreach(Session::get('submenus') as $key => $value){
@@ -222,9 +222,51 @@
                                     }                                   
                                 }                                                              
                             @endphp
-                            @if (Session::has('menus'))                            
+                            <!-- Comienzo del menu nuevo de tres niveles-->
+                            @foreach(Session::get('mainmenu') as $mMenu)
+                            <li class="">
+                                <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
+                                    <i class="nav-icon ti {{$mMenu->ICON}}"></i><span class="nav-title">{{$mMenu->NOMBRE}}</span></a>
+                                <ul aria-expanded="false" class="collapse" style="height: 0px;">
+                                    <!-- Inicio Menu-->
+                                    @foreach (Session::get('menus') as $menu)
+                                        @if (in_array($menu->IDMENU,$menItems))
+                                            @if($menu->IDMAINMENU == $mMenu->IDMAINMENU)
+                                                <li class="scoop-hasmenu">
+                                                    <!--Titulo de SubMenu-->
+                                                    <a class="has-arrow" href="javascript: void(0);" aria-expanded="false">
+                                                        @if ($menu->MENUNOMBRE == 'EMPRESAS')
+                                                            @if (Session::get('rol') == 'ADM' || Session::get('rol') == 'OPE' )
+                                                                MI EMPRESA
+                                                            @else
+                                                                {{ $menu->MENUNOMBRE }}
+                                                            @endif
+                                                        @else
+                                                            {{ $menu->MENUNOMBRE }}
+                                                        @endif
+                                                    </a>
+                                                    <!--Fin Titulo de SubMenu-->
+                                                    <ul aria-expanded="false" class="collapse" style="">
+                                                        <!--Inicio nombre Opcion-->
+                                                        @foreach (Session::get('submenus') as $item)
+                                                            @if ($item->IDMENU == $menu->IDMENU && $item->ESMENU == 'S' && $item->ESTADO == 'S')
+                                                                <li> <a class="url_menu_lateral" href="javascript:void(0)" id_url='{{route("$item->URLOPCION")}}'>{{ $item->NOMBREOPCION }}</a> </li>  
+                                                            @endif
+                                                        @endforeach 
+                                                        <!--fin nombre Opcion-->
+                                                    </ul>
+                                                </li>
+                                            @endif                                            
+                                        @endif
+                                    @endforeach
+                                    <!-- Fin Menu-->
+                                </ul>
+                            </li>  
+                            @endforeach 
+                            <!-- Fin Menu de tres niveles-->
+                            {{-- @if (Session::has('menus'))                            
                                 @foreach (Session::get('menus') as $menu)
-                                    @if (in_array($menu->IDMENU,$menItems))                                  
+                                    @if (in_array($menu->IDMENU,$menItems))                       
                                         <li class="inactive">
                                             <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
                                                 <i class="nav-icon ti ti-menu"></i> 
@@ -248,8 +290,7 @@
                                         </li> 
                                     @endif                              
                                 @endforeach
-                            @endif
-                            
+                            @endif --}}
                         </ul>
                     </div>
                     <!-- end sidebar-nav -->
@@ -264,6 +305,8 @@
                                 @php
                                     $userDT2 = Session::get('usuario');
                                     $empresad =  $userDT2['empresa']; 
+
+
                                 @endphp 
                                 <div class="card card-statistics">
                                     <div class="card-header">

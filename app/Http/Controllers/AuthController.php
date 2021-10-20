@@ -41,6 +41,16 @@ class AuthController extends Controller
             }
 
             if(Hash::check(trim($pass),$claveBase)){
+
+                $mainmenu = DB::table('MAINMENU')
+                ->where('MAINMENU.ESTADO','A')
+                //->join('GEOMENU','GEOMENU.IDMAINMENU','MAINMENU.IDMAINMENU')
+                ->select(
+                    'MAINMENU.NOMBRE',
+                    'MAINMENU.ICON',
+                    'MAINMENU.IDMAINMENU'
+                )
+                ->get();
                 
                 $submenus = DB::table('GEOACCESOS')
                 ->where('GEOACCESOS.IDUSUARIO',$check->IDUSUARIO)
@@ -54,6 +64,8 @@ class AuthController extends Controller
                     'GEOACCESOS.ESTADO'
                 )
                 ->get();
+
+                Log::info($mainmenu);
 
                 //Login de usuario recien creado desde la app
                 if(count($submenus) == 0){
@@ -91,6 +103,7 @@ class AuthController extends Controller
                     'empresa'=>$empresa
                 ]);
                 
+                Session::put('mainmenu',$mainmenu);
                 Session::put('menus',$menus);
                 Session::put('submenus',$submenus);
                 Session::put('rol',$check->ROL);
