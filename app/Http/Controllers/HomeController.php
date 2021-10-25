@@ -20,7 +20,10 @@ class HomeController extends Controller
             $empresadata = $session2['empresa']; 
             $idEmpresa = $empresadata['IDEMPRESA'];
             $date = Carbon::now();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3f9a03b700f542cfe17058c5b36fea49fcd508a4
 
             $usuarios = DB::table('GEOUSUARIO')
             ->where('IDEMPRESA',$idEmpresa)
@@ -29,15 +32,18 @@ class HomeController extends Controller
             //facturas que sean del dia.
             $facturas = DB::table('GEOCABFACTURA')
             ->where('IDEMPRESA',$idEmpresa)
+            ->whereBetween('FECHAEMI',[ $date->format('d-m-Y'),$date->format('d-m-Y')])
             ->get();
 
             //diaria.
             $compras = DB::table('GEOCABINGRESO')
             ->where('IDEMPRESA',$idEmpresa)
+            ->whereBetween('FECHAEMI',[ $date->format('d-m-Y'),$date->format('d-m-Y')])
             ->get();
 
             //diario.
             $comisiones = DB::table('GEOCOMISIONES')
+            ->whereBetween('FECHACREACION',[ $date->format('d-m-Y'),$date->format('d-m-Y')])
             ->get();
 
             //rango de un mes para los charts . para PRO todos.
