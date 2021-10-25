@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -18,6 +19,8 @@ class HomeController extends Controller
             $session2 = Session::get('usuario');
             $empresadata = $session2['empresa']; 
             $idEmpresa = $empresadata['IDEMPRESA'];
+            $date = Carbon::now();
+
 
             $usuarios = DB::table('GEOUSUARIO')
             ->where('IDEMPRESA',$idEmpresa)

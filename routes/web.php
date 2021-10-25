@@ -154,6 +154,14 @@ Route::get('reporteindex','ReporteController@Index')->name('reporteindex');
 Route::post('buscareporte','ReporteController@BuscaReporte')->name('buscareporte');
 
 
+//SOPORTES
+Route::get('crearsoporte','soporteController@CrearSoporte')->name('crearsoporte');
+Route::post('guardarsoporte','soporteController@GuardarSoporte')->name('soporteguardar');
+
+//TEMPLATE MAINL
+Route::get('tempemail','soporteController@tempemail')->name('tempemail');
+
+
 Route::post('authlogin','AuthController@Login')->name('authlogin');
 Route::get('createuser','AuthController@Createuser');
 

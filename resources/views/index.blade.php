@@ -261,8 +261,11 @@
                                     @endforeach
                                     <!-- Fin Menu-->
                                 </ul>
-                            </li>  
+                            </li> 
                             @endforeach 
+                            @if (Session::get('rol') == 'ADM' || Session::get('rol') == 'OPE' )
+                                <li> <a class="url_menu_lateral" href="javascript:void(0)" id_url='{{route("crearsoporte")}}'>Soporte</a> </li>
+                            @endif
                             <!-- Fin Menu de tres niveles-->
                             {{-- @if (Session::has('menus'))                            
                                 @foreach (Session::get('menus') as $menu)
